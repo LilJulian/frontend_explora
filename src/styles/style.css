@@ -1,0 +1,56 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root{
+  --colorEncabezado: #A9DEA6;
+  --verdeOscuro: #10610C;
+  --verdeClaro: #E2FFD8;
+}
+
+.header-main{
+  background-color: var(--colorEncabezado);
+  padding: 0 5vw;
+  width: 100%;
+  height: 10vw;
+  display: flex;
+  align-items: center;
+  gap: 15vw;
+}
+
+.logo__imagen{
+  width: 20vw;
+}
+
+.busqueda{
+  position: relative;
+}
+
+.busqueda__input{
+  width: 30vw;
+  height: 2.8vw;
+  border-radius: 15px;
+  outline: none;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  padding-left: 1vw;
+}
+
+.busqueda__logo{
+  height: 2.8vw;
+  width: 2.5vw;
+  border-radius: 15px;
+  position: absolute;
+  right: 0;
+  border: none;
+  background-color: var(--verdeClaro);
+  cursor: pointer;
+  font-size: 1.3vw;
+}
+
+.busqueda__logo:hover{
+  background-color: var(--verdeOscuro);
+  color: white;
+}
