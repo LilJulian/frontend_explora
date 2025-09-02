@@ -1,0 +1,50 @@
+<section id="usuarios-section">
+  <h2>Gestión de Usuarios</h2>
+
+  <!-- Formulario de Usuario -->
+  <form id="form" autocomplete="off">
+    <input type="hidden" id="id" />
+
+    <div>
+      <label for="nombre">Nombre:</label>
+      <input type="text" id="nombre" required />
+    </div>
+
+    <div>
+      <label for="correo">Correo:</label>
+      <input type="email" id="correo" required />
+    </div>
+
+    <div>
+      <label for="telefono">Teléfono:</label>
+      <input type="text" id="telefono" maxlength="10" />
+    </div>
+
+    <div>
+      <label for="contrasena">Contraseña:</label>
+      <input type="password" id="contrasena" required />
+    </div>
+
+    <button type="submit" id="btnRegister">Guardar</button>
+    <button type="button" id="btnReset">Limpiar</button>
+  </form>
+
+  <!-- Tabla de Usuarios -->
+  <table border="1" id="tablaUsuarios">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+        <th>Teléfono</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Se llenará dinámicamente -->
+    </tbody>
+  </table>
+</section>
+
+

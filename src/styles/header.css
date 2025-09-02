@@ -1,0 +1,79 @@
+div#mi-div{
+  height: 100%;
+}
+
+.header-main{
+  background-color: var(--colorFondo);
+  padding: 0 5vw ;
+  width: 100%;
+  height: 10vw;
+  display: flex;
+  align-items: center;
+  gap: 14vw;
+  margin-bottom: 6vw;
+}
+
+.logo__imagen{
+  width: 20vw;
+}
+
+.busqueda{
+  position: relative;
+}
+
+.busqueda__input{
+  width: 20vw;
+  height: 2.8vw;
+  border-radius: 15px;
+  outline: none;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  padding-left: 1vw;
+}
+
+.busqueda__logo{
+  height: 2.8vw;
+  width: 2.5vw;
+  border-radius: 15px;
+  position: absolute;
+  right: 0;
+  border: none;
+  background-color: var(--verdeClaro);
+  cursor: pointer;
+  font-size: 1.3vw;
+}
+
+.busqueda__logo:hover{
+  background-color: var(--verdeOscuro);
+  color: white;
+}
+
+.menu_autenticacion{
+  display: flex;
+  gap: 5vw;
+  
+}
+
+.oculto{
+  display: none;
+}
+
+.menu_autenticacion__opciones{
+   list-style-type: none; /* Quita los puntos */
+  padding: 0; /* Opcional: elimina el espacio a la izquierda */
+  margin: 0;  /* Opcional: elimina márgenes */
+}
+
+.menu_autenticacion__link {
+  text-decoration: none;
+  color: white;
+  font-size: 2vw;
+  transition: all 0.3s ease; /* transición suave */
+}
+
+/* Efecto hover */
+.menu_autenticacion__link:hover {
+  color: var(--verdeOscuro); /* Verde oscuro */
+  text-shadow: 0 0 8px rgba(0, 100, 0, 0.7); /* resplandor verde */
+  transform: scale(1.05); /* efecto de crecimiento sutil */
+}

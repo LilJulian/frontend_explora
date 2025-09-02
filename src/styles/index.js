@@ -1,0 +1,8 @@
+// Estilos globales
+import './main.css';
+
+// Estilos de componentes
+import './header.css';
+import './forms.css';
+import './superadmin.css';
+import './viajes.css';
