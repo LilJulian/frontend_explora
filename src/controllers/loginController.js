@@ -52,7 +52,7 @@ switch (rol) {
         window.location.href = '#/superadmin';
         break;
     default:
-        window.location.href = '#/viajes'; // Fallback
+        window.location.href = '#/login'; // Fallback
 }
 
     }

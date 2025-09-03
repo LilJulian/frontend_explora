@@ -61,7 +61,7 @@ export const registroController = async (parametros = null) => {
 
       console.log("📤 Enviando datos al backend:", datos);
 
-      const respuesta = await solicitudes.post(datos, "auth/register");
+      const respuesta = await solicitudes.post(  "auth/register", datos);
       console.log("📥 Respuesta del backend:", respuesta);
 
       if (!respuesta) {

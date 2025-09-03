@@ -13,16 +13,24 @@ export const router = async (elemento) => {
         return;
     }
 
-    // Bloqueo de rutas privadas
-    if (ruta.private && !await isAuth()) {
-        await Swal.fire({
-            icon: 'warning',
-            title: 'Acceso denegado',
-            text: 'Debes iniciar sesión para acceder a esta página',
-            confirmButtonText: 'Ir a login'
-        });
-        location.hash = "#/login";
-        return;
+    // 🔹 Validar autenticación y permisos
+    if (ruta.private) {
+        const tieneAcceso = await isAuth(ruta.permission); // <-- ahora recibe permiso
+        console.log(ruta.permission);
+        console.log(tieneAcceso);
+        
+        if (!tieneAcceso) {
+            await Swal.fire({
+                icon: "error",
+                title: "Acceso denegado",
+                text: ruta.permission
+                    ? "No tienes permisos para entrar en esta página"
+                    : "Debes iniciar sesión para acceder a esta página",
+                confirmButtonText: "Ir al inicio"
+            });
+            location.hash = "#/viajes"; // 👈 tu página principal de cliente
+            return;
+        }
     }
 
     // Cargar vista y ejecutar controlador

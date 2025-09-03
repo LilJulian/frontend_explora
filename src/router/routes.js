@@ -30,11 +30,13 @@ export const routers = {
    superadmin:{
       path: "superadmin/menu/index.html",
       controller: superAdminController,
-      private: true
+      private: true,
+      permission: "superadmin.index"
    },usuarios:{
       path: "superadmin/usuarios/index.html",
       controller: usuarioController,
-      private: true
+      private: true,
+      permission: "usuarios.index"
    }
 
 }

@@ -53,7 +53,7 @@ export const usuarioController = async () => {
           await success(resp.mensaje || "Usuario actualizado");
         } else {
           // Crear
-          const resp = await solicitudes.post(datos, "usuarios");
+          const resp = await solicitudes.post(datos, "auth/register");
           await success(resp.mensaje || "Usuario creado");
         }
 
