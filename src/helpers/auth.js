@@ -16,28 +16,33 @@ export const logout = () => {
     localStorage.removeItem("refresh_token");
 };
 
-export const isAuth = async () => {
+export const isAuth = async (requiredPermission = null) => {
     const accessToken = localStorage.getItem("access_token");
-    if (!accessToken) return false; // Sin token → no autenticado
+    if (!accessToken) return false;
 
     try {
-        // Validamos el token actual
+        // 1. Validar token
         let response = await get("auth/validate", true);
-
-        if (response.valid) return true;
-
-        // Token expirado → intentar renovar
-        const refreshOk = await genNewToken();
-        if (refreshOk) {
-            // Validamos de nuevo con el token renovado
+        if (!response.valid) {
+            const refreshOk = await genNewToken();
+            if (!refreshOk) return false;
             response = await get("auth/validate", true);
-            return response.valid === true;
+            if (!response.valid) return false;
         }
 
-        return false; // no se pudo renovar
+        // 2. Si no hay permiso requerido → solo autenticación
+        if (!requiredPermission) return true;
+
+        // 3. Obtener info del usuario (con permisos)
+        const userInfo = await get("auth/me", true);
+        if (!userInfo || !userInfo.permisos) return false;
+
+        // 4. Validar permiso
+        return userInfo.permisos.includes(requiredPermission);
+
     } catch (error) {
-        console.warn("Usuario no autenticado o token inválido:", error);
-        return false; // cualquier error → no autenticado
+        console.warn("Error en isAuth:", error);
+        return false;
     }
 };
 

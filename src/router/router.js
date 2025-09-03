@@ -15,9 +15,9 @@ export const router = async (elemento) => {
 
     // 🔹 Validar autenticación y permisos
     if (ruta.private) {
-        const tieneAcceso = await isAuth(ruta.permission); // <-- ahora recibe permiso
-        console.log(ruta.permission);
-        console.log(tieneAcceso);
+        const tieneAcceso = await isAuth(ruta.permission); 
+        console.log("Permiso requerido:", ruta.permission);
+        console.log("¿Tiene acceso?:", tieneAcceso);
         
         if (!tieneAcceso) {
             await Swal.fire({
@@ -28,12 +28,12 @@ export const router = async (elemento) => {
                     : "Debes iniciar sesión para acceder a esta página",
                 confirmButtonText: "Ir al inicio"
             });
-            location.hash = "#/viajes"; // 👈 tu página principal de cliente
+            location.hash = "#/login"; // 👈 tu página principal de cliente
             return;
         }
     }
 
-    // Cargar vista y ejecutar controlador
+    // 🔹 Cargar vista y ejecutar controlador
     await cargarVista(ruta.path, elemento);
     if (ruta.controller) await ruta.controller(parametros);
 };
@@ -41,14 +41,15 @@ export const router = async (elemento) => {
 const recorrerRutas = (routers, arregloHash) => {
     let parametros = {};
 
-    // Procesar parámetros si existen (en la cuarta posición)
-    if (arregloHash.length === 4) {
-        let parametrosSeparados = arregloHash[3].split("&");
+    // Detectar si el último segmento tiene parámetros tipo clave=valor
+    const ultimaParte = arregloHash[arregloHash.length - 1];
+    if (ultimaParte && ultimaParte.includes("=")) {
+        let parametrosSeparados = ultimaParte.split("&");
         parametrosSeparados.forEach((parametro) => {
             let [clave, valor] = parametro.split("=");
             parametros[clave] = valor;
         });
-        arregloHash.pop();
+        arregloHash.pop(); // quitamos los parámetros del array
     }
 
     for (const key in routers) {

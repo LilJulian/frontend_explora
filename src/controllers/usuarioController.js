@@ -96,12 +96,17 @@ export const usuarioController = async () => {
       // Editar
       tablaBody.querySelectorAll(".editar").forEach(btn => {
         btn.addEventListener("click", async () => {
-          const user = await solicitudes.get(`usuarios/${btn.dataset.id}`);
-          idInput.value = user.id;
-          nombre.value = user.nombre;
-          correo.value = user.correo;
-          telefono.value = user.telefono || "";
-          contrasena.value = user.contrasena || "";
+          try {
+            const user = await solicitudes.get(`usuarios/${btn.dataset.id}`);
+            idInput.value = user.id;
+            nombre.value = user.nombre;
+            correo.value = user.correo;
+            telefono.value = user.telefono || "";
+            contrasena.value = ""; // nunca cargamos la contraseña real
+          } catch (err) {
+            console.error(err);
+            error("No se pudo obtener el usuario.");
+          }
         });
       });
 
