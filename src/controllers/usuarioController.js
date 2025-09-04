@@ -31,44 +31,53 @@ export const usuarioController = async () => {
     });
 
     // Submit
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
+   // Submit
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      if (!validate.validarCampos(e)) return;
+  if (!validate.validarCampos(e)) return;
 
-      const datos = {
-        nombre: nombre.value.trim(),
-        correo: correo.value.trim(),
-        telefono: telefono.value.trim(),
-        contrasena: contrasena.value
-      };
+  const datos = {
+    nombre: nombre.value.trim(),
+    correo: correo.value.trim(),
+    telefono: telefono.value.trim(),
+    contrasena: contrasena.value,
+    rol: 1   // 👈 siempre administrador
+  };
 
-      try {
-        btnRegister.disabled = true;
-        btnRegister.textContent = idInput.value ? "Actualizando..." : "Creando...";
+  if (contrasena.value.trim() !== "") {
+  datos.contrasena = contrasena.value;
+}
 
-        if (idInput.value) {
-          // Actualizar
-          const resp = await solicitudes.put(datos, `usuarios/${idInput.value}`);
-          await success(resp.mensaje || "Usuario actualizado");
-        } else {
-          // Crear
-          const resp = await solicitudes.post(datos, "auth/register");
-          await success(resp.mensaje || "Usuario creado");
-        }
+  try {
+    btnRegister.disabled = true;
+    btnRegister.textContent = idInput.value ? "Actualizando..." : "Creando...";
 
-        form.reset();
-        idInput.value = "";
-        await cargarUsuarios();
+if (idInput.value) {
+  // Actualizar
+  const resp = await solicitudes.put(datos, `auth/update/${idInput.value}`);
+  await success(resp.message || "Usuario actualizado");
+} else {
+  // Crear
+  const resp = await solicitudes.post("auth/register", datos);
+  await success(resp.message || "Usuario creado");
+}
 
-      } catch (err) {
-        console.error(err);
-        error("Ocurrió un error, revisa la consola.");
-      } finally {
-        btnRegister.disabled = false;
-        btnRegister.textContent = "Guardar";
-      }
-    });
+
+
+    form.reset();
+    idInput.value = "";
+    await cargarUsuarios();
+
+  } catch (err) {
+    console.error(err);
+    error("Ocurrió un error, revisa la consola.");
+  } finally {
+    btnRegister.disabled = false;
+    btnRegister.textContent = "Guardar";
+  }
+});
+
   }
 
   // Cargar usuarios en la tabla
@@ -86,8 +95,8 @@ export const usuarioController = async () => {
           <td>${u.telefono || ""}</td>
           <td>${u.rolNombre}</td>
           <td>
-            <button data-id="${u.id}" class="editar">Editar</button>
-            <button data-id="${u.id}" class="eliminar">Eliminar</button>
+            <button data-id="${u.id}" class="btn__confirmar">Editar</button>
+            <button data-id="${u.id}" class="btn__limpiar">Eliminar</button>
           </td>
         `;
         tablaBody.appendChild(tr);

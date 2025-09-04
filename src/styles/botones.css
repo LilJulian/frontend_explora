@@ -1,0 +1,19 @@
+.btn__confirmar {
+  background-color: #66bb6a;
+  color: white;
+}
+
+.btn__confirmar:hover {
+  background-color: #4caf50;
+  transform: scale(1.05);
+}
+
+.btn__limpiar {
+  background-color: #c8e6c9;
+  color: #2e7d32;
+}
+
+.btn__limpiar:hover {
+  background-color: #a5d6a7;
+  transform: scale(1.05);
+}

@@ -60,26 +60,6 @@
   transition: background 0.3s ease, transform 0.2s;
 }
 
-.usuarios__btn--guardar {
-  background-color: #66bb6a;
-  color: white;
-}
-
-.usuarios__btn--guardar:hover {
-  background-color: #4caf50;
-  transform: scale(1.05);
-}
-
-.usuarios__btn--limpiar {
-  background-color: #c8e6c9;
-  color: #2e7d32;
-}
-
-.usuarios__btn--limpiar:hover {
-  background-color: #a5d6a7;
-  transform: scale(1.05);
-}
-
 .usuarios__tabla {
   width: 100%;
   border-collapse: collapse;

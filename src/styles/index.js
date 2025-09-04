@@ -1,5 +1,6 @@
 // Estilos globales
 import './main.css';
+import './botones.css'
 
 // Estilos de componentes
 import './header.css';

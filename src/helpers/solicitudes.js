@@ -68,15 +68,18 @@ export const put = async (datos, endpoint) => {
     method: "PUT",
     credentials: "include",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json", // 👈 importante
       ...getAuthHeaders(),
     },
-    body: encodeForm(datos),
+    body: JSON.stringify(datos), // 👈 enviamos JSON plano
   });
 
   if (!res.ok) throw new Error(`Error PUT ${endpoint}: ${res.status}`);
   return await res.json();
 };
+
+
+
 
 /**
  * Realiza una petición DELETE al backend
