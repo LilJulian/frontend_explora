@@ -1,9 +1,9 @@
+import { ciudadesController } from "../controllers/ciudadesController.js";
 import { loginController } from "../controllers/loginController.js";
 import { registroController } from "../controllers/registroController.js.js";
 import { superAdminController } from "../controllers/superAdminController.js";
 import { usuarioController } from "../controllers/usuarioController.js";
 import { ticketController } from "../views/viajes/ticket/ticketController";
-import { viajesDisponiblesController } from "../views/viajes/viajesDisponibles.js/viajesDisponiblesController";
 
 
 export const routers = {
@@ -17,11 +17,6 @@ export const routers = {
       controller: registroController,
       private: false
    },
-   viajes:{
-      path: "viajes/viajesDisponibles/index.html",
-      controller: viajesDisponiblesController,
-      private: true
-   },
    ticket:{
       path: "viajes/ticket/index.html",
       controller: ticketController,
@@ -33,8 +28,23 @@ export const routers = {
       private: true,
       permission: "superadmin.index"
    },usuarios:{
-      path: "superadmin/usuarios/index.html",
+      path: "superadmin/usuarios/usuarios-form.html",
       controller: usuarioController,
+      private: true,
+      permission: "usuarios.create"
+   },tablaUsuarios:{
+      path: "superadmin/usuarios/usuarios-tabla.html",
+      controller: usuarioController,
+      private: true,
+      permission: "usuarios.index"
+   },ciudades:{
+      path: "viajes/ciudades/ciudades-form.html",
+      controller: ciudadesController,
+      private: true,
+      permission: "usuarios.index"
+   },tablaCiudades:{
+      path: "viajes/ciudades/ciudades-tabla.html",
+      controller: ciudadesController,
       private: true,
       permission: "usuarios.index"
    }

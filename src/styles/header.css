@@ -45,7 +45,7 @@ div#mi-div{
 
 .busqueda__logo:hover{
   background-color: var(--verdeOscuro);
-  color: white;
+  color: var(--letrasBlancas);
 }
 
 .menu_autenticacion{
@@ -58,22 +58,32 @@ div#mi-div{
   display: none;
 }
 
-.menu_autenticacion__opciones{
+.menu_autenticacion__opciones, .menu_superadmin__opcion{
    list-style-type: none; /* Quita los puntos */
   padding: 0; /* Opcional: elimina el espacio a la izquierda */
   margin: 0;  /* Opcional: elimina márgenes */
 }
 
-.menu_autenticacion__link {
+.menu_autenticacion__link, .menu_superadmin__link {
   text-decoration: none;
-  color: white;
+  color: var(--letrasBlancas);
   font-size: 2vw;
   transition: all 0.3s ease; /* transición suave */
 }
 
 /* Efecto hover */
-.menu_autenticacion__link:hover {
+.menu_autenticacion__link:hover, .menu_superadmin__link:hover {
   color: var(--verdeOscuro); /* Verde oscuro */
   text-shadow: 0 0 8px rgba(0, 100, 0, 0.7); /* resplandor verde */
   transform: scale(1.05); /* efecto de crecimiento sutil */
+}
+
+
+.menu_superadmin__opciones{
+  display: flex;
+  gap: 7vw;
+}
+
+.menu_superadmin__link{
+  font-size: 1.7vw;
 }

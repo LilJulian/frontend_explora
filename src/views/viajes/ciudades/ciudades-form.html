@@ -1,0 +1,32 @@
+<a href="#/superadmin" class="usuarios__btn usuarios__btn--volver">⬅ Volver</a>
+<section class="usuarios" id="usuarios-form-section">
+  <h2 class="usuarios__titulo">Gestión de Ciudades </h2>
+
+  <form class="usuarios__form" id="form" autocomplete="off">
+    <input type="hidden" id="id" class="usuarios__input" />
+
+    <!-- 🔹 Select de País -->
+    <div class="usuarios__grupo">
+      <label for="pais" class="usuarios__label">País:</label>
+      <div style="display: flex; gap: 8px;">
+        <select id="pais" class="usuarios__input" required>
+          <option value="">Seleccione un país</option>
+          <!-- Aquí se cargan dinámicamente los países con JS -->
+        </select>
+        <button type="button" id="btnAddPais" class="usuarios__btn btn__limpiar">añade</button>
+      </div>
+    </div>
+
+    <div class="usuarios__grupo">
+      <label for="nombre" class="usuarios__label">Nombre:</label>
+      <input type="text" id="nombre" class="usuarios__input" required />
+    </div>
+
+    <div class="usuarios__acciones">
+      <button type="submit" class="usuarios__btn btn__confirmar" id="btnRegister">Guardar</button>
+      <button type="button" class="usuarios__btn btn__limpiar" id="btnReset">Limpiar</button>
+      <a href="#/tablaCiudades" class="usuarios__btn usuarios__btn--ver">Ver Ciudades</a>
+    </div>
+  </form>
+</section>
+

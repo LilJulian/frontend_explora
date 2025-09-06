@@ -1,6 +1,6 @@
 import * as validate from "../helpers/validates.js";
 import * as solicitudes from "../helpers/solicitudes.js";
-import { success, error, confirm } from "../helpers/alertas.js";
+import { success, error } from "../helpers/alertas.js";
 
 export const usuarioController = async () => {
   const tablaBody = document.querySelector("#tablaUsuarios tbody");
@@ -8,140 +8,91 @@ export const usuarioController = async () => {
   const btnRegister = document.getElementById("btnRegister");
   const btnReset = document.getElementById("btnReset");
 
-  // Campos del formulario
-  const idInput = document.getElementById("id");
   const nombre = document.getElementById("nombre");
   const correo = document.getElementById("correo");
   const telefono = document.getElementById("telefono");
   const contrasena = document.getElementById("contrasena");
 
-  // Evita añadir listeners repetidos
-  if (form.dataset.inited !== "true") {
+      const cargarUsuarios = async () => {
+      try {
+        const usuarios = await solicitudes.get("usuarios");
+        tablaBody.innerHTML = "";
+
+        usuarios.forEach(u => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${u.id}</td>
+            <td>${u.nombre}</td>
+            <td>${u.correo}</td>
+            <td>${u.telefono || ""}</td>
+            <td>${u.rolNombre}</td>
+          `;
+          tablaBody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error(err);
+        error("No se pudieron cargar los usuarios.");
+      }
+    };
+
+  // 👉 SOLO si el form existe
+  if (form && form.dataset.inited !== "true") {
     form.dataset.inited = "true";
 
-    // Validaciones en tiempo real
-    if (nombre) nombre.addEventListener("keydown", (e) => validate.validarTexto(e));
-    if (telefono) telefono.addEventListener("keydown", (e) => validate.validarNumero(e));
+    // Restricciones de entrada en tiempo real
+    if (nombre) nombre.addEventListener("keypress", validate.validarTexto);
+    if (telefono) {
+      telefono.addEventListener("keypress", validate.validarNumero);
+      telefono.addEventListener("keypress", (e) => {
+        if (e.target.value.length >= 10 && !["Backspace","Delete"].includes(e.key)) {
+          e.preventDefault();
+        }
+      });
+    }
 
     // Limpiar formulario
-    btnReset.addEventListener("click", () => {
+    btnReset?.addEventListener("click", () => {
       form.reset();
-      idInput.value = "";
       [...form.querySelectorAll(".error")].forEach(c => c.classList.remove("error"));
     });
 
-    // Submit
-   // Submit
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    // Submit (solo registrar)
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  if (!validate.validarCampos(e)) return;
+      // ✅ Usamos tu validación global
+      if (!validate.validarCampos(e)) return;
 
-  const datos = {
-    nombre: nombre.value.trim(),
-    correo: correo.value.trim(),
-    telefono: telefono.value.trim(),
-    contrasena: contrasena.value,
-    rol: 1   // 👈 siempre administrador
-  };
+      const datos = {
+        nombre: nombre.value.trim(),
+        correo: correo.value.trim(),
+        telefono: telefono.value.trim(),
+        contrasena: contrasena.value,
+        rol: 1
+      };
 
-  if (contrasena.value.trim() !== "") {
-  datos.contrasena = contrasena.value;
-}
+      try {
+        btnRegister.disabled = true;
+        btnRegister.textContent = "Creando...";
 
-  try {
-    btnRegister.disabled = true;
-    btnRegister.textContent = idInput.value ? "Actualizando..." : "Creando...";
+        const resp = await solicitudes.post("auth/register", datos);
+        await success(resp.message || "Usuario creado");
 
-if (idInput.value) {
-  // Actualizar
-  const resp = await solicitudes.put(datos, `auth/update/${idInput.value}`);
-  await success(resp.message || "Usuario actualizado");
-} else {
-  // Crear
-  const resp = await solicitudes.post("auth/register", datos);
-  await success(resp.message || "Usuario creado");
-}
+        form.reset();
 
+      } catch (err) {
+        console.error(err);
+        error("Ocurrió un error, revisa la consola.");
+      } finally {
+        btnRegister.disabled = false;
+        btnRegister.textContent = "Guardar";
+      }
+    });
+  }
 
-
-    form.reset();
-    idInput.value = "";
+  // 👉 SOLO si la tabla existe
+  if (tablaBody) {
     await cargarUsuarios();
-
-  } catch (err) {
-    console.error(err);
-    error("Ocurrió un error, revisa la consola.");
-  } finally {
-    btnRegister.disabled = false;
-    btnRegister.textContent = "Guardar";
   }
-});
-
-  }
-
-  // Cargar usuarios en la tabla
-  const cargarUsuarios = async () => {
-    try {
-      const usuarios = await solicitudes.get("usuarios");
-      tablaBody.innerHTML = "";
-
-      usuarios.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${u.id}</td>
-          <td>${u.nombre}</td>
-          <td>${u.correo}</td>
-          <td>${u.telefono || ""}</td>
-          <td>${u.rolNombre}</td>
-          <td>
-            <button data-id="${u.id}" class="btn__confirmar">Editar</button>
-            <button data-id="${u.id}" class="btn__limpiar">Eliminar</button>
-          </td>
-        `;
-        tablaBody.appendChild(tr);
-      });
-
-      // Editar
-      tablaBody.querySelectorAll(".editar").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          try {
-            const user = await solicitudes.get(`usuarios/${btn.dataset.id}`);
-            idInput.value = user.id;
-            nombre.value = user.nombre;
-            correo.value = user.correo;
-            telefono.value = user.telefono || "";
-            contrasena.value = ""; // nunca cargamos la contraseña real
-          } catch (err) {
-            console.error(err);
-            error("No se pudo obtener el usuario.");
-          }
-        });
-      });
-
-      // Eliminar
-      tablaBody.querySelectorAll(".eliminar").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          const confirmacion = await confirm("¿Deseas eliminar este usuario?");
-          if (!confirmacion.isConfirmed) return;
-
-          try {
-            const resp = await solicitudes.delet(`usuarios/${btn.dataset.id}`);
-            await success(resp.mensaje || "Usuario eliminado");
-            await cargarUsuarios();
-          } catch (err) {
-            console.error(err);
-            error("No se pudo eliminar el usuario.");
-          }
-        });
-      });
-
-    } catch (err) {
-      console.error(err);
-      error("No se pudieron cargar los usuarios.");
-    }
-  };
-
-  // Carga inicial
-  await cargarUsuarios();
 };

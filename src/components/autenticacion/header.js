@@ -18,44 +18,66 @@ export const renderHeader = async (elemento) => {
             headerMain.style.justifyContent = 'flex-start'; // Clientes: logo + búsqueda
         } else {
             busqueda.classList.add('oculto');
-            headerMain.style.justifyContent = 'space-between'; // Superadmins/admins: logo a la izquierda, menú a la derecha
+            headerMain.style.justifyContent = 'space-evenly'; // Superadmins/admins: logo izquierda, menú derecha
         }
     }
 
     if (!menu) return;
-
-    // Limpiar las opciones actuales
     menu.innerHTML = '';
 
-    if (!autenticado) {
-        // Mostrar login y signup
-        menu.innerHTML = `
-            <ul class="menu_autenticacion__opciones">
-                <li class="menu_autenticacion__opcion" id="login">
-                    <a href="#/login" class="menu_autenticacion__link">Log In</a>
+if (!autenticado) {
+    // 👉 Usuario no autenticado: login y signup
+    menu.innerHTML = `
+        <ul class="menu_autenticacion__opciones">
+            <li class="menu_autenticacion__opcion" id="login">
+                <a href="#/login" class="menu_autenticacion__link">Log In</a>
+            </li>
+        </ul>
+        <ul class="menu_autenticacion__opciones">
+            <li class="menu_autenticacion__opcion" id="signup">
+                <a href="#/registro" class="menu_autenticacion__link">Sign up</a>
+            </li>
+        </ul>
+    `;
+} else {
+    let opciones = "";
+
+    // 👉 Si es superadmin (rol 3) y está en la vista de viajes, mostrar menú extra
+    if (localStorage.getItem("id_rol") === "1" && location.hash === "#/viajes") {
+        opciones = `
+            <ul class="menu_superadmin__opciones">
+                <li class="menu_superadmin__opcion">
+                    <a href="#/ciudades" class="menu_superadmin__link">Ciudades</a>
                 </li>
-            </ul>
-            <ul class="menu_autenticacion__opciones">
-                <li class="menu_autenticacion__opcion" id="signup">
-                    <a href="#/registro" class="menu_autenticacion__link">Sign up</a>
+                <li class="menu_superadmin__opcion">
+                    <a href="#/transportes" class="menu_superadmin__link">Transportes</a>
+                </li>
+                <li class="menu_superadmin__opcion">
+                    <a href="#/viajes" class="menu_superadmin__link">Viajes</a>
                 </li>
             </ul>
         `;
-    } else {
-        // Mostrar cerrar sesión
-        menu.innerHTML = `
-            <ul class="menu_autenticacion__opciones">
-                <li class="menu_autenticacion__opcion" id="logout">
-                    <a href="#" class="menu_autenticacion__link">Cerrar sesión</a>
-                </li>
-            </ul>
-        `;
-        const btnLogout = menu.querySelector('#logout');
-        btnLogout.addEventListener('click', () => {
-            logout();
-            alert("Sesión cerrada correctamente");
-            location.hash = "#/login";
-            renderHeader(elemento);
-        });
     }
-};
+
+    // 👉 Logout siempre aparte
+    const logoutBtn = `
+        <ul class="menu_autenticacion__opciones">
+            <li class="menu_autenticacion__opcion" id="logout">
+                <a href="#" class="menu_autenticacion__link">Cerrar sesión</a>
+            </li>
+        </ul>
+    `;
+
+    menu.innerHTML = opciones + logoutBtn;
+
+    // 👉 Evento logout
+    const btnLogout = menu.querySelector('#logout');
+    btnLogout.addEventListener('click', (e) => {
+        e.preventDefault();
+        logout();
+        alert("Sesión cerrada correctamente");
+        location.hash = "#/login";
+        renderHeader(elemento);
+    });
+}
+}

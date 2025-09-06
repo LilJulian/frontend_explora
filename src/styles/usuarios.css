@@ -2,16 +2,16 @@
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #f9fff9;
-  border: 1px solid #cce3cc;
+  background-color: var(--fondoBlanco);
+  border: 1px solid var(--verdeClaro);
   border-radius: 12px;
   font-family: Arial, sans-serif;
-  color: #2f4f2f;
+  color: var(--labelVerde);
 }
 
 .usuarios__titulo {
   text-align: center;
-  color: #2e7d32;
+  color: var(--labelVerde);
   margin-bottom: 1.5rem;
 }
 
@@ -30,19 +30,19 @@
 .usuarios__label {
   margin-bottom: 0.3rem;
   font-weight: bold;
-  color: #336633;
+  color: var(--labelVerde);
 }
 
 .usuarios__input {
   padding: 0.5rem;
-  border: 1px solid #a5d6a7;
+  border: 1px solid var(--btnClaroHover);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s ease;
 }
 
 .usuarios__input:focus {
-  border-color: #2e7d32;
+  border-color: var(--verdeOscuro);
   box-shadow: 0 0 5px rgba(46, 125, 50, 0.3);
 }
 
@@ -63,21 +63,21 @@
 .usuarios__tabla {
   width: 100%;
   border-collapse: collapse;
-  background-color: #ffffff;
+  background-color: var(--fondoBlanco);
   border-radius: 8px;
   overflow: hidden;
 }
 
 .usuarios__tabla-th {
-  background-color: #e8f5e9;
-  color: #2e7d32;
+  background-color: var(--verdeClaro);
+  color: var(--verdeOscuro);
   padding: 0.8rem;
   text-align: left;
 }
 
 .usuarios__tabla td {
   padding: 0.8rem;
-  border-bottom: 1px solid #c8e6c9;
+  border-bottom: 1px solid var(--verdeClaro);
 }
 
 .usuarios__tabla tr:hover {

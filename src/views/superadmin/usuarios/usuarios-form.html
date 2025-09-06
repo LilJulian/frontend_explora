@@ -1,7 +1,7 @@
-<section class="usuarios" id="usuarios-section">
+<a href="#/superadmin" class="usuarios__btn usuarios__btn--volver">⬅ Volver</a>
+<section class="usuarios" id="usuarios-form-section">
   <h2 class="usuarios__titulo">Gestión de Usuarios</h2>
 
-  <!-- Formulario de Usuario -->
   <form class="usuarios__form" id="form" autocomplete="off">
     <input type="hidden" id="id" class="usuarios__input" />
 
@@ -22,32 +22,14 @@
 
     <div class="usuarios__grupo">
       <label for="contrasena" class="usuarios__label">Contraseña:</label>
-      <input type="password" id="contrasena" class="usuarios__input" placeholder="(opcional al editar)" />
-
+      <input type="password" id="contrasena" class="usuarios__input" required/>
     </div>
 
     <div class="usuarios__acciones">
       <button type="submit" class="usuarios__btn btn__confirmar" id="btnRegister">Guardar</button>
       <button type="button" class="usuarios__btn btn__limpiar" id="btnReset">Limpiar</button>
+      <a href="#/tablaUsuarios" class="usuarios__btn usuarios__btn--ver">Ver Usuarios</a>
+
     </div>
   </form>
-
-  <!-- Tabla de Usuarios -->
-  <table class="usuarios__tabla" id="tablaUsuarios">
-    <thead class="usuarios__tabla-head">
-      <tr>
-        <th class="usuarios__tabla-th">ID</th>
-        <th class="usuarios__tabla-th">Nombre</th>
-        <th class="usuarios__tabla-th">Correo</th>
-        <th class="usuarios__tabla-th">Teléfono</th>
-        <th class="usuarios__tabla-th">Rol</th>
-        <th class="usuarios__tabla-th">Acciones</th>
-      </tr>
-    </thead>
-    <tbody class="usuarios__tabla-body">
-      <!-- Se llenará dinámicamente -->
-    </tbody>
-  </table>
 </section>
-
-

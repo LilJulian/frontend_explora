@@ -9,7 +9,7 @@
 }
 
 .form {
-  background-color: #98df9c; 
+  background-color: var(--colorFondo); 
   padding: 30px 25px;
   border-radius: 15px;
   width: 30vw;
@@ -25,17 +25,17 @@
   margin: 12px 0;
   border: none;
   border-radius: 10px;
-  background: #d8f7d9;
+  background: var(--verdeClaro);
   font-size: 14px;
   font-weight: bold;
   text-align: center;
-  color: #444;
+  color: var(--placeholderOscuro);
 }
 
 .form_boton {
   width: 100%;
-  background-color: #065d1f;
-  color: white;
+  background-color: var(--verdeOscuro);
+  color: var(--letraBotones);
   border: none;
   padding: 12px;
   border-radius: 20px;

@@ -11,6 +11,14 @@
   --colorFondo: #A9DEA6;
   --verdeOscuro: #10610C;
   --verdeClaro: #E2FFD8;
+  --verdeBotones: #66bb6a;
+  --letraBotones: white;
+  --btnClaroHover: #a5d6a7;
+  --letraBtnVerde: #2e7d32;
+  --placeholderOscuro: #444;
+  --letrasBlancas: white;
+  --fondoBlanco: white;
+  --labelVerde: #2f4f2f;
 }
 
 body {
