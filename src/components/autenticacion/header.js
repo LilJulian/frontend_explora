@@ -59,6 +59,26 @@ if (!autenticado) {
         `;
     }
 
+if (
+  localStorage.getItem("id_rol") === "1" &&
+  (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")
+) {
+    opciones = `
+        <ul class="menu_superadmin__opciones">
+            <li class="menu_superadmin__opcion">
+                <a href="#/ciudades" class="menu_superadmin__link">Crea ciudades</a>
+            </li>
+            <li class="menu_superadmin__opcion">
+                <a href="#/tablaCiudades" class="menu_superadmin__link">Ver ciudades</a>
+            </li>
+            <li class="menu_superadmin__opcion">
+                <a href="#/rutaCiudad" class="menu_superadmin__link">Rutas</a>
+            </li>
+        </ul>
+    `;
+}
+
+
     // 👉 Logout siempre aparte
     const logoutBtn = `
         <ul class="menu_autenticacion__opciones">
