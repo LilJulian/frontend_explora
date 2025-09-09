@@ -69,7 +69,7 @@ export const usuarioController = async () => {
         correo: correo.value.trim(),
         telefono: telefono.value.trim(),
         contrasena: contrasena.value,
-        rol: 1
+        rol: 2
       };
 
       try {

@@ -1,0 +1,65 @@
+<a href="#/superadmin" class="usuarios__btn usuarios__btn--volver">⬅ Volver</a>
+<section class="usuarios" id="usuarios-form-section">
+    <h2 class="usuarios__titulo">Gestión de Viajes</h2>
+
+    <form class="usuarios__form" id="form" autocomplete="off">
+        <input type="hidden" id="id" class="usuarios__input" />
+
+        <!-- 🔹 Ruta (ciudades) -->
+        <div class="usuarios__grupo">
+            <label for="id_ciudades" class="usuarios__label">Ruta (Origen - Destino):</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="id_ciudades" class="usuarios__input" required>
+                    <option value="">Seleccione una ruta</option>
+                    <!-- Aquí se cargan dinámicamente las rutas con JS -->
+                </select>
+            </div>
+        </div>
+
+        <!-- 🔹 Transporte -->
+        <div class="usuarios__grupo">
+            <label for="id_transporte" class="usuarios__label">Transporte:</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="id_transporte" class="usuarios__input" required>
+                    <option value="">Seleccione un transporte</option>
+                    <!-- Aquí se cargan dinámicamente los transportes con JS -->
+                </select>
+            </div>
+        </div>
+
+        <!-- 🔹 Fechas -->
+        <div class="usuarios__grupo">
+            <label for="fecha_salida" class="usuarios__label">Fecha de salida:</label>
+            <input type="datetime-local" id="fecha_salida" class="usuarios__input" required />
+        </div>
+
+        <div class="usuarios__grupo">
+            <label for="fecha_llegada" class="usuarios__label">Fecha de llegada:</label>
+            <input type="datetime-local" id="fecha_llegada" class="usuarios__input" required />
+        </div>
+
+        <div class="usuarios__grupo">
+            <label for="fecha_vuelta" class="usuarios__label">Fecha de vuelta (opcional):</label>
+            <input type="datetime-local" id="fecha_vuelta" class="usuarios__input" />
+        </div>
+
+        <!-- 🔹 Precio -->
+        <div class="usuarios__grupo">
+            <label for="precio_unitario" class="usuarios__label">Precio unitario:</label>
+            <input type="number" step="0.01" id="precio_unitario" class="usuarios__input" required />
+        </div>
+
+        <!-- Mostrar asientos solo informativo -->
+<div class="usuarios__grupo">
+  <span id="asientos_info" style="font-weight:bold; color:#333;"></span>
+</div>
+
+
+        <!-- 🔹 Botones -->
+        <div class="usuarios__acciones">
+            <button type="submit" class="usuarios__btn btn__confirmar" id="btnRegister">Guardar</button>
+            <button type="button" class="usuarios__btn btn__limpiar" id="btnReset">Limpiar</button>
+            <a href="#/tablaViajes" class="usuarios__btn usuarios__btn--ver">Ver viajes</a>
+        </div>
+    </form>
+</section>

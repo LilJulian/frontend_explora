@@ -5,6 +5,7 @@ import { rutaController } from "../controllers/rutasController.js";
 import { superAdminController } from "../controllers/superAdminController.js";
 import { transportesController } from "../controllers/transportesController.js";
 import { usuarioController } from "../controllers/usuarioController.js";
+import { viajesController } from "../controllers/viajesController.js";
 import { ticketController } from "../views/viajes/ticket/ticketController";
 
 
@@ -62,6 +63,16 @@ export const routers = {
    },tablaTransportes:{
       path: "viajes/transportes/transportes-tabla.html",
       controller: transportesController,
+      private: true,
+      permission: "usuarios.index"
+   },viajes:{
+      path: "viajes/vuelos/viajes-form.html",
+      controller: viajesController,
+      private: true,
+      permission: "usuarios.index"
+   },tablaViajes:{
+      path: "viajes/vuelos/viajes-tabla.html",
+      controller: viajesController,
       private: true,
       permission: "usuarios.index"
    }
