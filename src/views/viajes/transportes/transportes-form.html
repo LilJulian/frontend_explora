@@ -1,0 +1,60 @@
+<a href="#/superadmin" class="usuarios__btn usuarios__btn--volver">⬅ Volver</a>
+<section class="usuarios" id="usuarios-form-section">
+    <h2 class="usuarios__titulo">Gestión de Trasnportes </h2>
+
+    <form class="usuarios__form" id="form" autocomplete="off">
+        <input type="hidden" id="id" class="usuarios__input" />
+
+        <!-- 🔹 Nombre transporte -->
+        <div class="usuarios__grupo">
+            <label for="nombre" class="usuarios__label">Nombre:</label>
+            <input type="text" id="nombre" class="usuarios__input" required />
+        </div>
+
+        <div class="usuarios__grupo">
+            <label for="matricula" class="usuarios__label">Matricula:</label>
+            <input type="text" id="matricula" class="usuarios__input" required />
+        </div>
+
+        <div class="usuarios__grupo">
+            <label for="asientos" class="usuarios__label">Asientos totales:</label>
+            <input type="text" id="asientos" class="usuarios__input" required />
+        </div>
+
+
+        <div class="usuarios__grupo">
+            <label for="descripcion" class="usuarios__label">Descripcion:</label>
+            <input type="text" id="descripcion" class="usuarios__input" required />
+        </div>
+        
+
+        <!-- 🔹 Select de tipo transporte -->
+        <div class="usuarios__grupo">
+            <label for="tipoTransporte" class="usuarios__label">Tipo de Transporte:</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="tipoTransporte" class="usuarios__input" required>
+                    <option value="">Seleccione un tipo de transporte</option>
+                    <!-- Aquí se cargan dinámicamente los los tipos con JS -->
+                </select>
+            </div>
+        </div>
+
+        <div class="usuarios__grupo">
+            <label for="estado" class="usuarios__label">Estado del Transporte:</label>
+            <div style="display: flex; gap: 8px;">
+                <select id="estado" class="usuarios__input" required>
+                    <option value="">Seleccione un estado</option>
+                    <!-- Aquí se cargan dinámicamente los los estados con JS -->
+                </select>
+            </div>
+        </div>
+
+
+        <!-- 🔹 Botones -->
+        <div class="usuarios__acciones">
+            <button type="submit" class="usuarios__btn btn__confirmar" id="btnRegister">Guardar</button>
+            <button type="button" class="usuarios__btn btn__limpiar" id="btnReset">Limpiar</button>
+            <a href="#/tablaTransportes" class="usuarios__btn usuarios__btn--ver">Ver transportes</a>
+        </div>
+    </form>
+</section>

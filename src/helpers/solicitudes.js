@@ -38,15 +38,28 @@ export const post = async (endpoint, datos = {}) => {
     method: "POST",
     credentials: "include",
     headers: {
-      "Content-Type": "application/json", // 👈 JSON
+      "Content-Type": "application/json",
       ...getAuthHeaders(),
     },
-    body: JSON.stringify(datos), // 👈 JSON.stringify
+    body: JSON.stringify(datos),
   });
 
-  if (!res.ok) throw new Error(`Error POST ${endpoint}: ${res.status}`);
-  return await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    data = null; // por si el backend devuelve texto plano
+  }
+
+  if (!res.ok) {
+    // 👇 devolvemos el mensaje real del backend si existe
+    const msg = data?.error || data?.mensaje || `Error POST ${endpoint}: ${res.status}`;
+    throw new Error(msg);
+  }
+
+  return data;
 };
+
 
 /**
  * Realiza una petición PUT al backend usando JSON

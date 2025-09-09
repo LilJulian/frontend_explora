@@ -17,11 +17,32 @@
       </div>
     </div>
 
+    <!-- 🔹 Nombre ciudad -->
     <div class="usuarios__grupo">
       <label for="nombre" class="usuarios__label">Nombre:</label>
       <input type="text" id="nombre" class="usuarios__input" required />
     </div>
 
+    <!-- 🔹 Infraestructura de la ciudad -->
+    <div class="usuarios__grupo">
+      <label class="usuarios__label">Infraestructura:</label>
+      <div class="checkbox-group">
+        <label class="checkbox-container">
+          <input type="checkbox" id="tiene_terminal" />
+          <span class="checkmark"></span> Terminal
+        </label>
+        <label class="checkbox-container">
+          <input type="checkbox" id="tiene_aeropuerto" />
+          <span class="checkmark"></span> Aeropuerto
+        </label>
+        <label class="checkbox-container">
+          <input type="checkbox" id="tiene_puerto" />
+          <span class="checkmark"></span> Puerto
+        </label>
+      </div>
+    </div>
+
+    <!-- 🔹 Botones -->
     <div class="usuarios__acciones">
       <button type="submit" class="usuarios__btn btn__confirmar" id="btnRegister">Guardar</button>
       <button type="button" class="usuarios__btn btn__limpiar" id="btnReset">Limpiar</button>
@@ -29,4 +50,4 @@
     </div>
   </form>
 </section>
-
+  

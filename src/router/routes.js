@@ -1,7 +1,9 @@
 import { ciudadesController } from "../controllers/ciudadesController.js";
 import { loginController } from "../controllers/loginController.js";
 import { registroController } from "../controllers/registroController.js.js";
+import { rutaController } from "../controllers/rutasController.js";
 import { superAdminController } from "../controllers/superAdminController.js";
+import { transportesController } from "../controllers/transportesController.js";
 import { usuarioController } from "../controllers/usuarioController.js";
 import { ticketController } from "../views/viajes/ticket/ticketController";
 
@@ -45,6 +47,21 @@ export const routers = {
    },tablaCiudades:{
       path: "viajes/ciudades/ciudades-tabla.html",
       controller: ciudadesController,
+      private: true,
+      permission: "usuarios.index"
+   },rutaCiudad:{
+      path: "viajes/ciudades/ciudades-ruta.html",
+      controller: rutaController,
+      private: true,
+      permission: "usuarios.index"
+   },transportes:{
+      path: "viajes/transportes/transportes-form.html",
+      controller: transportesController,
+      private: true,
+      permission: "usuarios.index"
+   },tablaTransportes:{
+      path: "viajes/transportes/transportes-tabla.html",
+      controller: transportesController,
       private: true,
       permission: "usuarios.index"
    }

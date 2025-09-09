@@ -26,3 +26,9 @@ body {
   flex-direction: column;
   justify-content: center; 
 }
+ /* @media (max-width: 896px) {
+  .logo__imagen{
+    width: 35vw;
+  }
+  
+ } */

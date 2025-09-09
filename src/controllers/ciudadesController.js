@@ -3,24 +3,22 @@ import * as solicitudes from "../helpers/solicitudes.js";
 import { success, error, confirm } from "../helpers/alertas.js";
 
 export const ciudadesController = async () => {
-  // NOTA: no guardamos tabla/inputs en const global porque pueden re-renderizarse
   const form = document.getElementById("form");
   const btnReset = document.getElementById("btnReset");
 
-  // Estado local (útil pero NO la fuente de verdad)
   let editando = false;
   let ciudadIdEditar = null;
 
-  // Helper: espera a que exista un selector en el DOM (útil con routing/hash)
+  // ================== Esperar elemento en DOM ==================
   const waitForElement = (selector, timeout = 3000) => {
     return new Promise((resolve, reject) => {
       const el = document.querySelector(selector);
       if (el) return resolve(el);
 
-      const observer = new MutationObserver((mutations, obs) => {
+      const observer = new MutationObserver(() => {
         const found = document.querySelector(selector);
         if (found) {
-          obs.disconnect();
+          observer.disconnect();
           resolve(found);
         }
       });
@@ -38,9 +36,8 @@ export const ciudadesController = async () => {
 
   // ================== Cargar Ciudades ==================
   const cargarCiudades = async () => {
-    // recapturamos tabla por si no está montada al inicio
     const tablaBody = document.querySelector("#tablaCiudades tbody");
-    if (!tablaBody) return; // si no está en DOM, salimos (quien llame puede reintentar)
+    if (!tablaBody) return;
     try {
       const ciudades = await solicitudes.get("ciudad");
       tablaBody.innerHTML = "";
@@ -51,6 +48,9 @@ export const ciudadesController = async () => {
           <td>${c.id_ciudad}</td>
           <td>${c.paisNombre ?? ""}</td>
           <td>${c.nombre}</td>
+          <td>${c.tiene_terminal ? "✅" : "❌"}</td>
+          <td>${c.tiene_aeropuerto ? "✅" : "❌"}</td>
+          <td>${c.tiene_puerto ? "✅" : "❌"}</td>
           <td>
             <button class="btnEditar" data-id="${c.id_ciudad}">✏️ Editar</button>
             <button class="btnEliminar" data-id="${c.id_ciudad}">🗑 Eliminar</button>
@@ -59,7 +59,7 @@ export const ciudadesController = async () => {
         tablaBody.appendChild(tr);
       });
 
-      // attach events (se recapturan cada vez para evitar duplicados)
+      // editar
       tablaBody.querySelectorAll(".btnEditar").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.id;
@@ -67,29 +67,23 @@ export const ciudadesController = async () => {
             const ciudad = await solicitudes.get(`ciudad/${id}`);
             if (!ciudad) return;
 
-            // navegar a form
             location.hash = "#/ciudades";
-
-            try {
-              // esperar que el form esté montado
-              await waitForElement("#form", 3000);
-            } catch (e) {
-              console.warn("Formulario no montado a tiempo:", e);
-            }
-
-            // aseguramos que el select de países esté poblado
+            await waitForElement("#form", 3000);
             await cargarPaises();
 
-            // ahora sí recapturamos elementos del form
             const btnRegisterEl = document.getElementById("btnRegister");
             const nombreInput = document.getElementById("nombre");
             const paisSelect = document.getElementById("pais");
             const idHidden = document.getElementById("id");
 
+            // checkboxes
+            const chkTerminal = document.getElementById("tiene_terminal");
+            const chkAeropuerto = document.getElementById("tiene_aeropuerto");
+            const chkPuerto = document.getElementById("tiene_puerto");
+
             if (nombreInput && paisSelect && idHidden && btnRegisterEl) {
               nombreInput.value = ciudad.nombre;
 
-              // si la opción no existe, la añadimos (por si no vino en la lista)
               const optExists = !!paisSelect.querySelector(`option[value="${ciudad.id_pais}"]`);
               if (!optExists) {
                 const opt = document.createElement("option");
@@ -101,13 +95,14 @@ export const ciudadesController = async () => {
               paisSelect.value = String(ciudad.id_pais);
               idHidden.value = String(ciudad.id_ciudad);
 
-              // estado local
+              // marcar checkboxes
+              if (chkTerminal) chkTerminal.checked = ciudad.tiene_terminal ?? false;
+              if (chkAeropuerto) chkAeropuerto.checked = ciudad.tiene_aeropuerto ?? false;
+              if (chkPuerto) chkPuerto.checked = ciudad.tiene_puerto ?? false;
+
               editando = true;
               ciudadIdEditar = ciudad.id_ciudad;
-
               btnRegisterEl.textContent = "Actualizar";
-            } else {
-              console.warn("No se encontraron elementos del form para rellenar.");
             }
           } catch (err) {
             console.error(err);
@@ -116,6 +111,7 @@ export const ciudadesController = async () => {
         });
       });
 
+      // eliminar
       tablaBody.querySelectorAll(".btnEliminar").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.id;
@@ -124,7 +120,6 @@ export const ciudadesController = async () => {
             try {
               const resp = await solicitudes.delet(`ciudad/${id}`);
               await success(resp.message || "Ciudad eliminada");
-              // recargar tabla (estamos en tabla, así que existe)
               await cargarCiudades();
             } catch (err) {
               console.error(err);
@@ -147,7 +142,6 @@ export const ciudadesController = async () => {
       const paisSelect = document.getElementById("pais");
       if (!paisSelect) return;
       paisSelect.innerHTML = `<option value="">Seleccione un país</option>`;
-
       paises.forEach(p => {
         const option = document.createElement("option");
         option.value = p.id ?? p.id_pais ?? p.idPais;
@@ -160,15 +154,13 @@ export const ciudadesController = async () => {
     }
   };
 
-  // 👉 INICIALIZACIÓN DEL FORM (solo cuando el form esté en DOM)
+  // ================== Inicializar formulario ==================
   if (form && form.dataset.inited !== "true") {
     form.dataset.inited = "true";
 
-    // validar texto
     const nombreInputInit = document.getElementById("nombre");
     if (nombreInputInit) nombreInputInit.addEventListener("keypress", validate.validarTexto);
 
-    // reset
     btnReset?.addEventListener("click", () => {
       form.reset();
       const idHidden = document.getElementById("id");
@@ -180,7 +172,6 @@ export const ciudadesController = async () => {
       [...form.querySelectorAll(".error")].forEach(c => c.classList.remove("error"));
     });
 
-    // add pais desde UI
     const btnAddPaisEl = document.getElementById("btnAddPais");
     btnAddPaisEl?.addEventListener("click", async () => {
       const nuevoPais = prompt("Ingrese el nombre del nuevo país:");
@@ -195,20 +186,21 @@ export const ciudadesController = async () => {
       }
     });
 
-    // submit (crear / actualizar)
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!validate.validarCampos(e)) return;
 
-      // recapturamos elementos
       const nombreInput = document.getElementById("nombre");
       const paisSelect = document.getElementById("pais");
       const idHidden = document.getElementById("id");
       const btnRegisterEl = document.getElementById("btnRegister");
 
-      const opcionSeleccionada = paisSelect ? paisSelect.options[paisSelect.selectedIndex] : null;
-      const idPais = opcionSeleccionada ? opcionSeleccionada.value : "";
+      // checkboxes
+      const chkTerminal = document.getElementById("tiene_terminal");
+      const chkAeropuerto = document.getElementById("tiene_aeropuerto");
+      const chkPuerto = document.getElementById("tiene_puerto");
 
+      const idPais = paisSelect?.value || "";
       if (!idPais) {
         error("Debes seleccionar un país");
         return;
@@ -216,57 +208,50 @@ export const ciudadesController = async () => {
 
       const datos = {
         nombre: nombreInput ? nombreInput.value.trim() : "",
-        id_pais: parseInt(idPais)
+        id_pais: parseInt(idPais),
+        tiene_terminal: chkTerminal?.checked || false,
+        tiene_aeropuerto: chkAeropuerto?.checked || false,
+        tiene_puerto: chkPuerto?.checked || false
       };
 
       try {
-        if (btnRegisterEl) btnRegisterEl.disabled = true;
-        if (btnRegisterEl) btnRegisterEl.textContent = (idHidden && idHidden.value) ? "Actualizando..." : "Creando...";
+        if (btnRegisterEl) {
+          btnRegisterEl.disabled = true;
+          btnRegisterEl.textContent = idHidden?.value ? "Actualizando..." : "Creando...";
+        }
 
-        // lógica basada en hidden #id (fuente de verdad)
-        const editingId = idHidden && idHidden.value ? parseInt(idHidden.value) : null;
+        const editingId = idHidden?.value ? parseInt(idHidden.value) : null;
         let resp;
         if (editingId) {
           resp = await solicitudes.put(`ciudad/${editingId}`, datos);
-          console.log("PUT resp:", resp);
           await success(resp.message || "Ciudad actualizada");
         } else {
           resp = await solicitudes.post("ciudad", datos);
-          console.log("POST resp:", resp);
           await success(resp.message || "Ciudad creada");
         }
 
-        // limpiar y reset
         form.reset();
         if (idHidden) idHidden.value = "";
         editando = false;
         ciudadIdEditar = null;
         if (btnRegisterEl) btnRegisterEl.textContent = "Guardar";
 
-        // navegar a la vista tabla y forzar recarga cuando esté montada
         location.hash = "#/tablaCiudades";
-        try {
-          await waitForElement("#tablaCiudades tbody", 3000);
-          await cargarCiudades();
-        } catch (e) {
-          // si no aparece la tabla en el tiempo, al menos intentamos recargar más tarde
-          console.warn("No se pudo recargar la tabla inmediatamente:", e);
-        }
+        await waitForElement("#tablaCiudades tbody", 3000);
+        await cargarCiudades();
 
       } catch (err) {
         console.error(err);
-        error(editando ? "Ocurrió un error al actualizar la ciudad." : "Ocurrió un error al crear la ciudad.");
+        error(editando ? "Error al actualizar la ciudad." : "Error al crear la ciudad.");
       } finally {
         const btnRegisterElFinal = document.getElementById("btnRegister");
         if (btnRegisterElFinal) btnRegisterElFinal.disabled = false;
       }
     });
 
-    // cargar paises al inicializar el form
     await cargarPaises();
   }
 
-  // 👉 cargar tabla si está en DOM ahora
   if (document.querySelector("#tablaCiudades tbody")) {
     await cargarCiudades();
   }

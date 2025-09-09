@@ -1,0 +1,29 @@
+<section class="usuarios" id="rutas-form-section">
+  <h2 class="usuarios__titulo">Crear Ruta entre Ciudades</h2>
+
+  <form class="usuarios__form" id="formRuta" autocomplete="off">
+    <!-- Ciudad Origen -->
+    <div class="usuarios__grupo">
+      <label for="ciudadOrigen" class="usuarios__label">Ciudad Origen:</label>
+      <select id="ciudadOrigen" name="ciudadOrigen" class="usuarios__input" required>
+        <option value="">Seleccione una ciudad</option>
+        <!-- Las opciones se llenarán dinámicamente con JS -->
+      </select>
+    </div>
+
+    <!-- Ciudad Destino -->
+    <div class="usuarios__grupo">
+      <label for="ciudadDestino" class="usuarios__label">Ciudad Destino:</label>
+      <select id="ciudadDestino" name="ciudadDestino" class="usuarios__input" required>
+        <option value="">Seleccione una ciudad</option>
+        <!-- Las opciones se llenarán dinámicamente con JS -->
+      </select>
+    </div>
+
+    <!-- Botones -->
+    <div class="usuarios__acciones">
+      <button type="submit" class="usuarios__btn btn__confirmar" id="btnGuardarRuta">Guardar Ruta</button>
+      <button type="reset" class="usuarios__btn btn__limpiar" id="btnResetRuta">Limpiar</button>
+    </div>
+  </form>
+</section>
