@@ -9,3 +9,4 @@ import './superadmin.css';
 import './viajes.css';
 import './usuarios.css';
 import './helpers.css';
+import './cards.css';

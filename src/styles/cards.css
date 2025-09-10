@@ -1,0 +1,37 @@
+.viajes__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.viaje-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 1rem;
+  transition: transform 0.2s;
+}
+
+.viaje-card:hover {
+  transform: translateY(-5px);
+}
+
+.viaje-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.viaje-card p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.viaje-card .precio {
+  font-weight: bold;
+  color: #0077cc;
+  font-size: 1.1rem;
+  margin-top: 0.8rem;
+}
