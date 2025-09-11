@@ -1,0 +1,184 @@
+.reservas-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.reserva-card {
+  background: linear-gradient(145deg, #f9f9f9, #e6f0ff);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 280px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.reserva-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+}
+
+.reserva-card h3 {
+  margin-top: 0;
+  color: #003366;
+}
+
+.reserva-card p {
+  margin: 0.2rem 0;
+  color: #333;
+}
+
+.reserva-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.btn-pagar, .btn-cancelar {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+.btn-pagar {
+  background-color: #28a745;
+  color: #fff;
+  margin-right: 0.5rem;
+}
+
+.btn-pagar:hover {
+  background-color: #218838;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-cancelar:hover {
+  background-color: #c82333;
+}
+
+.btn-boletos {
+  margin-top: 0.7rem;
+  display: inline-block;
+  text-align: center;
+  background-color: #007bff;
+  color: #fff;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-boletos:hover {
+  background-color: #0056b3;
+}
+
+
+/* Contenedor de boletos */
+#boletos-section {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+/* Contenedor de las tarjetas */
+#boletos-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Tarjeta individual del boleto */
+.boleto-card {
+  background: linear-gradient(145deg, #fefefe, #e0f7fa);
+  border-radius: 12px;
+  padding: 1.2rem 1rem;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  border-left: 6px solid #00acc1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+}
+
+/* Efecto hover */
+.boleto-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Título del boleto */
+.boleto-card h3 {
+  font-size: 1.25rem;
+  color: #007c91;
+  margin-bottom: 0.8rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Info del boleto */
+.boleto-card p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+}
+
+/* Resaltar etiquetas */
+.boleto-card p strong {
+  color: #007c91;
+}
+
+/* Botón descargar */
+.btn-descargar {
+  display: block;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: #00acc1;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-descargar:hover {
+  background-color: #007c91;
+}
+
+/* Mensajes de error */
+.error {
+  color: #d32f2f;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Link de volver */
+.btn-volver {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #e0f7fa;
+  color: #007c91;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.btn-volver:hover {
+  background-color: #b2ebf2;
+}

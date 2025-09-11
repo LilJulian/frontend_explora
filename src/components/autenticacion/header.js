@@ -1,5 +1,6 @@
 import headerHtml from './header.html?raw';
 import { isAuth, logout, getUserInfo } from "../../helpers/auth.js";
+import Swal from "sweetalert2";
 
 export const renderHeader = async (elemento) => {
   elemento.innerHTML = headerHtml;
@@ -85,6 +86,18 @@ export const renderHeader = async (elemento) => {
       `;
     }
 
+    if (
+      localStorage.getItem("id_rol") === "3" &&
+      (location.hash === "#/cliente" || location.hash === "#/reservasCliente")
+    ) {
+      opciones = `
+        <ul class="menu_superadmin__opciones menu_autenticacion__opciones">
+          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/cliente">Ver viajes</a></li>
+          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/reservasCliente">Ver reservas</a></li>
+        </ul>
+      `;
+    }
+
     const logoutBtn = `
       <ul class="menu_autenticacion__opciones">
         <li class="menu_autenticacion__opcion" id="logout">
@@ -97,13 +110,34 @@ export const renderHeader = async (elemento) => {
 
     const btnLogout = menu.querySelector('#logout');
     if (btnLogout) {
-      btnLogout.addEventListener('click', (e) => {
+      btnLogout.addEventListener('click', async (e) => {
         e.preventDefault();
-        logout();
-        alert("Sesión cerrada correctamente");
-        location.hash = "#/login";
-        renderHeader(elemento);
+
+        // Confirmación con SweetAlert2
+        const result = await Swal.fire({
+          title: '¿Seguro que deseas cerrar sesión?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, salir',
+          cancelButtonText: 'Cancelar',
+          reverseButtons: true
+        });
+
+        if (result.isConfirmed) {
+          logout(); // Función que elimina tokens, localStorage, etc.
+
+          await Swal.fire({
+            icon: 'success',
+            title: 'Sesión cerrada correctamente',
+            showConfirmButton: false,
+            timer: 1500
+          });
+
+          location.hash = "#/login";
+          renderHeader(elemento);
+        }
       });
     }
+
   }
 };

@@ -1,6 +1,8 @@
+import { boletosController } from "../controllers/boletosController.js";
 import { ciudadesController } from "../controllers/ciudadesController.js";
 import { loginController } from "../controllers/loginController.js";
 import { registroController } from "../controllers/registroController.js.js";
+import { mostrarReservasCliente } from "../controllers/reservaCliente.js";
 import { reservasController } from "../controllers/reservasController.js";
 import { rutaController } from "../controllers/rutasController.js";
 import { superAdminController } from "../controllers/superAdminController.js";
@@ -47,32 +49,32 @@ export const routers = {
       path: "viajes/ciudades/ciudades-form.html",
       controller: ciudadesController,
       private: true,
-      permission: "usuarios.index"
+      permission: "ciudades.create"
    },tablaCiudades:{
       path: "viajes/ciudades/ciudades-tabla.html",
       controller: ciudadesController,
       private: true,
-      permission: "usuarios.index"
+      permission: "ciudades.index"
    },rutaCiudad:{
       path: "viajes/ciudades/ciudades-ruta.html",
       controller: rutaController,
       private: true,
-      permission: "usuarios.index"
+      permission: "ruta.index"
    },transportes:{
       path: "viajes/transportes/transportes-form.html",
       controller: transportesController,
       private: true,
-      permission: "usuarios.index"
+      permission: "transporte.index"
    },tablaTransportes:{
       path: "viajes/transportes/transportes-tabla.html",
       controller: transportesController,
       private: true,
-      permission: "usuarios.index"
+      permission: "transporte.create"
    },viajes:{
       path: "viajes/vuelos/viajes-form.html",
       controller: viajesController,
       private: true,
-      permission: "usuarios.index"
+      permission: "viajes.create"
    },tablaViajes:{
       path: "viajes/vuelos/viajes-tabla.html",
       controller: viajesController,
@@ -87,12 +89,22 @@ export const routers = {
       path: "cliente/reserva.html",
       controller: reservasController,
       private: true,
-      permission: "viajes.index"
+      permission: "reserva.create"
    },ticketForm:{
       path: "cliente/ticket-form.html",
       controller: ticketsFormController,
       private: true,
-      permission: "viajes.index"
+      permission: "ticket.index"
+   },reservasCliente:{
+      path: "cliente/misReservas.html",
+      controller: mostrarReservasCliente,
+      private: true,
+      permission: "reserva.index"
+   },boletos:{
+      path: "cliente/boletos.html",
+      controller: boletosController,
+      private: true,
+      permission: "ticket.index"
    }
 
 }

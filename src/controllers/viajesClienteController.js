@@ -6,10 +6,25 @@ export async function viajesClienteController() {
 
   try {
     // 🔹 Consumir API de viajes
-    const viajes = await solicitudes.get("viajes");
+    let viajes = await solicitudes.get("viajes");
 
     if (!viajes || viajes.length === 0) {
       container.innerHTML = `<p>No hay viajes disponibles en este momento.</p>`;
+      return;
+    }
+
+    // 🔹 Filtrar viajes: asientos >= 1 y fechaSalida >= hoy
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    viajes = viajes.filter(v => {
+      const fechaSalida = new Date(v.fechaSalida);
+      fechaSalida.setHours(0, 0, 0, 0);
+      return v.asientosDisponibles >= 1 && fechaSalida >= hoy;
+    });
+
+    if (viajes.length === 0) {
+      container.innerHTML = `<p>No hay viajes disponibles con asientos o fechas válidas.</p>`;
       return;
     }
 

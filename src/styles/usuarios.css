@@ -7,6 +7,12 @@
   font-family: Arial, sans-serif;
   color: var(--labelVerde);
 }
+.usuarios--tamano{
+  max-width: 490px;
+}
+.usuarios--tabla{
+  max-width: none;
+}
 .usuarios--border{
 border: 3px solid var(--verdeBotones);
 }
@@ -41,6 +47,7 @@ border: 3px solid var(--verdeBotones);
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s ease;
+  width: 400px;
 }
 
 .usuarios__input:focus {
@@ -173,6 +180,56 @@ border: 3px solid var(--verdeBotones);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
+
+/* Contenedor específico de tickets */
+#ticketsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* espacio entre cada grupo de persona */
+  margin-top: 1rem;
+}
+
+/* Cada grupo de persona dentro de tickets */
+.usuarios__grupo--ticket {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem; /* espacio entre labels e inputs dentro del grupo */
+}
+
+/* Labels dentro de tickets */
+.usuarios__label--ticket {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+/* Inputs y textarea dentro de tickets */
+.usuarios__input--ticket {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.usuarios__input--ticket:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+  outline: none;
+}
+
+/* Subtítulos de cada persona dentro de tickets */
+.usuarios__subtitulo--ticket {
+  margin-bottom: 0.8rem;
+  color: #333;
+  font-size: 1.1rem;
+}
+
 
 @media (max-width: 414px) and (max-height: 896px){
   .usuarios{

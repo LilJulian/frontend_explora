@@ -11,4 +11,5 @@ import './usuarios.css';
 import './helpers.css';
 import './cards.css';
 import './ticket.css';
+import './reservas.css';
 
