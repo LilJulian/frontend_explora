@@ -14,6 +14,7 @@ export const login = async (correo, contrasena) => {
 export const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    localStorage.removeItem("id_rol");
 };
 
 export const isAuth = async (requiredPermission = null) => {

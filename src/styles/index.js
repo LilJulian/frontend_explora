@@ -10,3 +10,5 @@ import './viajes.css';
 import './usuarios.css';
 import './helpers.css';
 import './cards.css';
+import './ticket.css';
+

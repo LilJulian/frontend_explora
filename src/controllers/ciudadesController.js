@@ -1,4 +1,4 @@
-import * as validate from "../helpers/validates.js";
+// src/controllers/ciudadesController.js
 import * as solicitudes from "../helpers/solicitudes.js";
 import { success, error, confirm } from "../helpers/alertas.js";
 
@@ -9,7 +9,7 @@ export const ciudadesController = async () => {
   let editando = false;
   let ciudadIdEditar = null;
 
-  // ================== Esperar elemento en DOM ==================
+  // ================== Helper: Esperar elemento ==================
   const waitForElement = (selector, timeout = 3000) => {
     return new Promise((resolve, reject) => {
       const el = document.querySelector(selector);
@@ -29,9 +29,51 @@ export const ciudadesController = async () => {
         observer.disconnect();
         const found = document.querySelector(selector);
         if (found) resolve(found);
-        else reject(new Error(`Timeout waiting for ${selector}`));
+        else reject(new Error(`Timeout esperando ${selector}`));
       }, timeout);
     });
+  };
+
+  // ================== Validaciones ==================
+  const marcarError = (input, condicion) => {
+    if (!input) return false;
+    if (condicion) {
+      input.classList.remove("error");
+      return true;
+    } else {
+      input.classList.add("error");
+      return false;
+    }
+  };
+
+  const validarTexto = (e) => {
+    const regex = /^[a-zA-ZÀ-ÿ\s]*$/;
+    if (!regex.test(e.key)) e.preventDefault();
+  };
+
+  const validarCampoTexto = (input) => {
+    if (!input) return false;
+    return marcarError(input, /^[a-zA-ZÀ-ÿ\s]{2,50}$/.test(input.value.trim()));
+  };
+
+  const validarSelect = (select) => {
+    if (!select) return false;
+    return marcarError(select, select.value !== "");
+  };
+
+  const validarCheckboxes = (chk1, chk2, chk3) => {
+    const alMenosUno = chk1?.checked || chk2?.checked || chk3?.checked;
+    if (!alMenosUno) {
+      chk1?.classList.add("error");
+      chk2?.classList.add("error");
+      chk3?.classList.add("error");
+      return false;
+    } else {
+      chk1?.classList.remove("error");
+      chk2?.classList.remove("error");
+      chk3?.classList.remove("error");
+      return true;
+    }
   };
 
   // ================== Cargar Ciudades ==================
@@ -51,9 +93,9 @@ export const ciudadesController = async () => {
           <td>${c.tiene_terminal ? "✅" : "❌"}</td>
           <td>${c.tiene_aeropuerto ? "✅" : "❌"}</td>
           <td>${c.tiene_puerto ? "✅" : "❌"}</td>
-          <td>
-            <button class="btnEditar" data-id="${c.id_ciudad}">✏️ Editar</button>
-            <button class="btnEliminar" data-id="${c.id_ciudad}">🗑 Eliminar</button>
+          <td class="usuarios__acciones">
+            <button class="btnEditar usuarios__btn" data-id="${c.id_ciudad}">Editar</button>
+            <button class="btnEliminar usuarios__btn" data-id="${c.id_ciudad}">Eliminar</button>
           </td>
         `;
         tablaBody.appendChild(tr);
@@ -71,10 +113,10 @@ export const ciudadesController = async () => {
             await waitForElement("#form", 3000);
             await cargarPaises();
 
-            const btnRegisterEl = document.getElementById("btnRegister");
             const nombreInput = document.getElementById("nombre");
             const paisSelect = document.getElementById("pais");
             const idHidden = document.getElementById("id");
+            const btnRegisterEl = document.getElementById("btnRegister");
 
             // checkboxes
             const chkTerminal = document.getElementById("tiene_terminal");
@@ -95,10 +137,9 @@ export const ciudadesController = async () => {
               paisSelect.value = String(ciudad.id_pais);
               idHidden.value = String(ciudad.id_ciudad);
 
-              // marcar checkboxes
-              if (chkTerminal) chkTerminal.checked = ciudad.tiene_terminal ?? false;
-              if (chkAeropuerto) chkAeropuerto.checked = ciudad.tiene_aeropuerto ?? false;
-              if (chkPuerto) chkPuerto.checked = ciudad.tiene_puerto ?? false;
+              chkTerminal.checked = ciudad.tiene_terminal ?? false;
+              chkAeropuerto.checked = ciudad.tiene_aeropuerto ?? false;
+              chkPuerto.checked = ciudad.tiene_puerto ?? false;
 
               editando = true;
               ciudadIdEditar = ciudad.id_ciudad;
@@ -158,13 +199,18 @@ export const ciudadesController = async () => {
   if (form && form.dataset.inited !== "true") {
     form.dataset.inited = "true";
 
-    const nombreInputInit = document.getElementById("nombre");
-    if (nombreInputInit) nombreInputInit.addEventListener("keypress", validate.validarTexto);
+    const nombreInput = document.getElementById("nombre");
+    const paisSelect = document.getElementById("pais");
 
+    // validaciones en tiempo real
+    nombreInput?.addEventListener("keypress", validarTexto);
+    nombreInput?.addEventListener("blur", () => validarCampoTexto(nombreInput));
+    paisSelect?.addEventListener("change", () => validarSelect(paisSelect));
+
+    // reset
     btnReset?.addEventListener("click", () => {
       form.reset();
-      const idHidden = document.getElementById("id");
-      if (idHidden) idHidden.value = "";
+      document.getElementById("id").value = "";
       editando = false;
       ciudadIdEditar = null;
       const btnRegisterEl = document.getElementById("btnRegister");
@@ -172,10 +218,14 @@ export const ciudadesController = async () => {
       [...form.querySelectorAll(".error")].forEach(c => c.classList.remove("error"));
     });
 
+    // agregar país
     const btnAddPaisEl = document.getElementById("btnAddPais");
     btnAddPaisEl?.addEventListener("click", async () => {
       const nuevoPais = prompt("Ingrese el nombre del nuevo país:");
-      if (!nuevoPais) return;
+      if (!nuevoPais || !/^[a-zA-ZÀ-ÿ\s]{2,50}$/.test(nuevoPais)) {
+        error("Nombre de país inválido");
+        return;
+      }
       try {
         const resp = await solicitudes.post("pais", { nombre: nuevoPais.trim() });
         await success(resp.message || "País agregado");
@@ -186,44 +236,59 @@ export const ciudadesController = async () => {
       }
     });
 
+    // submit
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!validate.validarCampos(e)) return;
 
-      const nombreInput = document.getElementById("nombre");
-      const paisSelect = document.getElementById("pais");
-      const idHidden = document.getElementById("id");
-      const btnRegisterEl = document.getElementById("btnRegister");
+      const nombreValido = validarCampoTexto(nombreInput);
+      const paisValido = validarSelect(paisSelect);
 
-      // checkboxes
       const chkTerminal = document.getElementById("tiene_terminal");
       const chkAeropuerto = document.getElementById("tiene_aeropuerto");
       const chkPuerto = document.getElementById("tiene_puerto");
+      const checkboxesValidos = validarCheckboxes(chkTerminal, chkAeropuerto, chkPuerto);
 
-      const idPais = paisSelect?.value || "";
-      if (!idPais) {
-        error("Debes seleccionar un país");
+      if (!nombreValido || !paisValido || !checkboxesValidos) {
+        error("Corrige los campos marcados en rojo.");
         return;
       }
 
-      const datos = {
-        nombre: nombreInput ? nombreInput.value.trim() : "",
-        id_pais: parseInt(idPais),
-        tiene_terminal: chkTerminal?.checked || false,
-        tiene_aeropuerto: chkAeropuerto?.checked || false,
-        tiene_puerto: chkPuerto?.checked || false
-      };
+      const idHidden = document.getElementById("id");
+      const btnRegisterEl = document.getElementById("btnRegister");
 
       try {
+        // 🚨 Validar duplicados solo en creación
+        if (!idHidden?.value) {
+          const ciudades = await solicitudes.get("ciudad");
+          const ciudadDuplicada = ciudades.find(
+            c => 
+              c.nombre.trim().toLowerCase() === nombreInput.value.trim().toLowerCase() &&
+              String(c.id_pais) === paisSelect.value
+          );
+
+          if (ciudadDuplicada) {
+            error("Ya existe una ciudad con ese nombre en el mismo país.");
+            nombreInput.classList.add("error");
+            return;
+          }
+        }
+
+        const datos = {
+          nombre: nombreInput.value.trim(),
+          id_pais: parseInt(paisSelect.value),
+          tiene_terminal: chkTerminal?.checked || false,
+          tiene_aeropuerto: chkAeropuerto?.checked || false,
+          tiene_puerto: chkPuerto?.checked || false
+        };
+
         if (btnRegisterEl) {
           btnRegisterEl.disabled = true;
           btnRegisterEl.textContent = idHidden?.value ? "Actualizando..." : "Creando...";
         }
 
-        const editingId = idHidden?.value ? parseInt(idHidden.value) : null;
         let resp;
-        if (editingId) {
-          resp = await solicitudes.put(`ciudad/${editingId}`, datos);
+        if (idHidden?.value) {
+          resp = await solicitudes.put(`ciudad/${idHidden.value}`, datos);
           await success(resp.message || "Ciudad actualizada");
         } else {
           resp = await solicitudes.post("ciudad", datos);
@@ -231,7 +296,7 @@ export const ciudadesController = async () => {
         }
 
         form.reset();
-        if (idHidden) idHidden.value = "";
+        idHidden.value = "";
         editando = false;
         ciudadIdEditar = null;
         if (btnRegisterEl) btnRegisterEl.textContent = "Guardar";

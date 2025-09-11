@@ -4,6 +4,7 @@ import { registroController } from "../controllers/registroController.js.js";
 import { reservasController } from "../controllers/reservasController.js";
 import { rutaController } from "../controllers/rutasController.js";
 import { superAdminController } from "../controllers/superAdminController.js";
+import { ticketsFormController } from "../controllers/ticketFormController.js";
 import { transportesController } from "../controllers/transportesController.js";
 import { usuarioController } from "../controllers/usuarioController.js";
 import { viajesClienteController } from "../controllers/viajesClienteController.js";
@@ -85,6 +86,11 @@ export const routers = {
    },reserva:{
       path: "cliente/reserva.html",
       controller: reservasController,
+      private: true,
+      permission: "viajes.index"
+   },ticketForm:{
+      path: "cliente/ticket-form.html",
+      controller: ticketsFormController,
       private: true,
       permission: "viajes.index"
    }

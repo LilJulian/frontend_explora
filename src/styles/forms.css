@@ -17,6 +17,9 @@
   text-align: center;
   position: relative;
 }
+.form--registro{
+  height: 400px;
+}
 
 .form_input {
   display: block;
@@ -42,4 +45,23 @@
   font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
+}
+
+@media (max-width: 414px) and (max-height: 896px) {
+  .form{
+    width: 80vw;
+    height: 80vw;
+    padding: 11vw;
+  }
+
+  .form--registro{
+    height: 450px;
+  }
+
+
+  .form_input{
+    margin-bottom: 6vw;
+    
+  }
+
 }

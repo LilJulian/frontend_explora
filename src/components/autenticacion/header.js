@@ -2,102 +2,108 @@ import headerHtml from './header.html?raw';
 import { isAuth, logout, getUserInfo } from "../../helpers/auth.js";
 
 export const renderHeader = async (elemento) => {
-    elemento.innerHTML = headerHtml; // Carga el HTML base
+  elemento.innerHTML = headerHtml;
 
-    const autenticado = await isAuth();
-    const usuario = autenticado ? await getUserInfo() : null;
+  const autenticado = await isAuth();
+  const usuario = autenticado ? await getUserInfo() : null;
 
-    const menu = elemento.querySelector('#menu-autenticacion'); 
-    const busqueda = elemento.querySelector('.busqueda');
-    const headerMain = elemento.querySelector('.header-main');
+  const formBuscar = elemento.querySelector("#buscar-ticket-form");
+  const menu = elemento.querySelector('#menu-autenticacion');
+  const busqueda = elemento.querySelector('.busqueda');
+  const headerMain = elemento.querySelector('.header-main');
 
-    // Mostrar u ocultar input de búsqueda según rol
+  if (!menu) return;
+  menu.innerHTML = '';
+
+  if (!autenticado) {
+    // ✅ Mostrar búsqueda solo si NO hay login
     if (busqueda) {
-        if (usuario && usuario.id_rol === 2) {
-            busqueda.classList.remove('oculto');
-            headerMain.style.justifyContent = 'flex-start'; // Clientes: logo + búsqueda
-        } else {
-            busqueda.classList.add('oculto');
-            headerMain.style.justifyContent = 'space-evenly'; // Superadmins/admins: logo izquierda, menú derecha
-        }
+      busqueda.classList.remove('oculto');
+      if (headerMain) headerMain.style.justifyContent = 'flex-start';
     }
 
-    if (!menu) return;
-    menu.innerHTML = '';
+    // Eventos búsqueda
+    if (formBuscar) {
+      formBuscar.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const valor = (formBuscar.querySelector("[name='ticket']").value || "").trim();
 
-if (!autenticado) {
-    // 👉 Usuario no autenticado: login y signup
+        if (!valor) {
+          alert("Ingresa un ID de ticket");
+          return;
+        }
+        if (!/^\d+$/.test(valor)) {
+          alert("El ID debe ser numérico");
+          return;
+        }
+
+        location.hash = `#/ticket/${encodeURIComponent(valor)}`;
+      });
+    }
+
+    // Menú autenticación
     menu.innerHTML = `
-        <ul class="menu_autenticacion__opciones">
-            <li class="menu_autenticacion__opcion" id="login">
-                <a href="#/login" class="menu_autenticacion__link">Log In</a>
-            </li>
-        </ul>
-        <ul class="menu_autenticacion__opciones">
-            <li class="menu_autenticacion__opcion" id="signup">
-                <a href="#/registro" class="menu_autenticacion__link">Sign up</a>
-            </li>
-        </ul>
+      <ul class="menu_autenticacion__opciones">
+        <li class="menu_autenticacion__opcion" id="login">
+          <a href="#/login" class="menu_autenticacion__link">Log In</a>
+        </li>
+      </ul>
+      <ul class="menu_autenticacion__opciones">
+        <li class="menu_autenticacion__opcion" id="signup">
+          <a href="#/registro" class="menu_autenticacion__link">Sign up</a>
+        </li>
+      </ul>
     `;
-} else {
+  } else {
+    // ✅ Ocultar búsqueda cuando ya está logueado
+    if (busqueda) {
+      busqueda.classList.add('oculto');
+    }
+
     let opciones = "";
 
-    // 👉 Si es superadmin (rol 3) y está en la vista de viajes, mostrar menú extra
     if (localStorage.getItem("id_rol") === "1" && location.hash === "#/viajes") {
-        opciones = `
-            <ul class="menu_superadmin__opciones">
-                <li class="menu_superadmin__opcion">
-                    <a href="#/ciudades" class="menu_superadmin__link">Ciudades</a>
-                </li>
-                <li class="menu_superadmin__opcion">
-                    <a href="#/transportes" class="menu_superadmin__link">Transportes</a>
-                </li>
-                <li class="menu_superadmin__opcion">
-                    <a href="#/viajes" class="menu_superadmin__link">Viajes</a>
-                </li>
-            </ul>
-        `;
+      opciones = `
+        <ul class="menu_autenticacion__opciones">
+          <li class="menu_autenticacion__opcion"><a href="#/ciudades" class="menu_autenticacion__link">Ciudades</a></li>
+          <li class="menu_autenticacion__opcion"><a href="#/transportes" class="menu_autenticacion__link">Transportes</a></li>
+          <li class="menu_autenticacion__opcion"><a href="#/viajes" class="menu_autenticacion__link">Viajes</a></li>
+        </ul>
+      `;
     }
 
-if (
-  localStorage.getItem("id_rol") === "1" &&
-  (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")
-) {
-    opciones = `
-        <ul class="menu_superadmin__opciones">
-            <li class="menu_superadmin__opcion">
-                <a href="#/ciudades" class="menu_superadmin__link">Crea ciudades</a>
-            </li>
-            <li class="menu_superadmin__opcion">
-                <a href="#/tablaCiudades" class="menu_superadmin__link">Ver ciudades</a>
-            </li>
-            <li class="menu_superadmin__opcion">
-                <a href="#/rutaCiudad" class="menu_superadmin__link">Rutas</a>
-            </li>
+    if (
+      localStorage.getItem("id_rol") === "1" &&
+      (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")
+    ) {
+      opciones = `
+        <ul class="menu_superadmin__opciones menu_autenticacion__opciones">
+          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/ciudades">Crea ciudades</a></li>
+          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/tablaCiudades">Ver ciudades</a></li>
+          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/rutaCiudad">Rutas</a></li>
         </ul>
-    `;
-}
+      `;
+    }
 
-
-    // 👉 Logout siempre aparte
     const logoutBtn = `
-        <ul class="menu_autenticacion__opciones">
-            <li class="menu_autenticacion__opcion" id="logout">
-                <a href="#" class="menu_autenticacion__link">Cerrar sesión</a>
-            </li>
-        </ul>
+      <ul class="menu_autenticacion__opciones">
+        <li class="menu_autenticacion__opcion" id="logout">
+          <a class="menu_autenticacion__link" href="#">Cerrar sesión</a>
+        </li>
+      </ul>
     `;
 
     menu.innerHTML = opciones + logoutBtn;
 
-    // 👉 Evento logout
     const btnLogout = menu.querySelector('#logout');
-    btnLogout.addEventListener('click', (e) => {
+    if (btnLogout) {
+      btnLogout.addEventListener('click', (e) => {
         e.preventDefault();
         logout();
         alert("Sesión cerrada correctamente");
         location.hash = "#/login";
         renderHeader(elemento);
-    });
-}
-}
+      });
+    }
+  }
+};

@@ -8,13 +8,15 @@ export const rutaController = async (parametros = null) => {
   const selectDestino = document.querySelector("#ciudadDestino");
 
   let ciudades = [];
+  let rutas = [];
 
-  // 1) Traer ciudades del backend
+  // 1) Traer ciudades y rutas del backend
   try {
     ciudades = await get("ciudad");
+    rutas = await get("ruta"); // 👈 obtenemos todas las rutas para validar duplicados
   } catch (err) {
-    console.error("Error cargando ciudades:", err);
-    error("No se pudieron cargar las ciudades. Revisa la consola.");
+    console.error("Error cargando datos:", err);
+    error("No se pudieron cargar ciudades o rutas.");
     return;
   }
 
@@ -43,16 +45,55 @@ export const rutaController = async (parametros = null) => {
   };
 
   // 3) Validar que no se pueda escoger la misma ciudad
+  // y que sean compatibles en su tipo de transporte
   const actualizarDeshabilitados = () => {
     const origenVal = selectOrigen.value;
     const destinoVal = selectDestino.value;
 
-    Array.from(selectOrigen.options).forEach((opt) => {
-      opt.disabled = opt.value !== "" && opt.value === destinoVal;
-    });
+    const origenCiudad = ciudades.find((c) => String(getCityId(c)) === origenVal);
+    const destinoCiudad = ciudades.find((c) => String(getCityId(c)) === destinoVal);
 
     Array.from(selectDestino.options).forEach((opt) => {
-      opt.disabled = opt.value !== "" && opt.value === origenVal;
+      if (opt.value === "") {
+        opt.disabled = false;
+        return;
+      }
+
+      if (!origenCiudad) {
+        opt.disabled = false;
+        return;
+      }
+
+      const ciudadDestino = ciudades.find((c) => String(getCityId(c)) === opt.value);
+
+      // Regla: deben compartir al menos un transporte en común
+      const compatibles =
+        (origenCiudad.tiene_terminal && ciudadDestino.tiene_terminal) ||
+        (origenCiudad.tiene_aeropuerto && ciudadDestino.tiene_aeropuerto) ||
+        (origenCiudad.tiene_puerto && ciudadDestino.tiene_puerto);
+
+      opt.disabled = opt.value === origenVal || !compatibles;
+    });
+
+    Array.from(selectOrigen.options).forEach((opt) => {
+      if (opt.value === "") {
+        opt.disabled = false;
+        return;
+      }
+
+      if (!destinoCiudad) {
+        opt.disabled = false;
+        return;
+      }
+
+      const ciudadOrigen = ciudades.find((c) => String(getCityId(c)) === opt.value);
+
+      const compatibles =
+        (destinoCiudad.tiene_terminal && ciudadOrigen.tiene_terminal) ||
+        (destinoCiudad.tiene_aeropuerto && ciudadOrigen.tiene_aeropuerto) ||
+        (destinoCiudad.tiene_puerto && ciudadOrigen.tiene_puerto);
+
+      opt.disabled = opt.value === destinoVal || !compatibles;
     });
   };
 
@@ -69,7 +110,7 @@ export const rutaController = async (parametros = null) => {
   selectOrigen.addEventListener("change", actualizarDeshabilitados);
   selectDestino.addEventListener("change", actualizarDeshabilitados);
 
-  // 5) Submit con SweetAlert2
+  // 5) Submit con validación de duplicados y terrestres
   formRuta.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -86,6 +127,37 @@ export const rutaController = async (parametros = null) => {
       return;
     }
 
+    // ✅ Validar que la ruta no exista en el mismo sentido
+    const existeRuta = rutas.some(
+      (r) =>
+        String(r.id_ciudad_origen) === idOrigen &&
+        String(r.id_ciudad_destino) === idDestino
+    );
+
+    if (existeRuta) {
+      error("Ya existe una ruta con esas ciudades en ese orden.");
+      return;
+    }
+
+    // ✅ Validar que no sea terrestre entre países distintos
+    const origenCiudad = ciudades.find((c) => String(getCityId(c)) === idOrigen);
+    const destinoCiudad = ciudades.find((c) => String(getCityId(c)) === idDestino);
+
+    if (origenCiudad && destinoCiudad && origenCiudad.id_pais !== destinoCiudad.id_pais) {
+      const soloTerrestre =
+        origenCiudad.tiene_terminal &&
+        destinoCiudad.tiene_terminal &&
+        !origenCiudad.tiene_aeropuerto &&
+        !destinoCiudad.tiene_aeropuerto &&
+        !origenCiudad.tiene_puerto &&
+        !destinoCiudad.tiene_puerto;
+
+      if (soloTerrestre) {
+        error("No se puede crear una ruta terrestre entre países distintos.");
+        return;
+      }
+    }
+
     const nuevaRuta = {
       id_ciudad_origen: Number(idOrigen),
       id_ciudad_destino: Number(idDestino),
@@ -96,6 +168,9 @@ export const rutaController = async (parametros = null) => {
       console.log("Ruta creada:", res);
 
       success("Ruta creada correctamente.");
+
+      // recargar rutas en memoria para evitar duplicados en la misma sesión
+      rutas = await get("ruta");
 
       formRuta.reset();
       llenarAmbosSelects();

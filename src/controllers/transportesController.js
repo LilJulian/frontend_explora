@@ -1,5 +1,4 @@
 // src/controllers/transportesController.js
-import * as validate from "../helpers/validates.js";
 import * as solicitudes from "../helpers/solicitudes.js";
 import { success, error, confirm } from "../helpers/alertas.js";
 
@@ -10,7 +9,7 @@ export const transportesController = async () => {
   let editando = false;
   let transporteIdEditar = null;
 
-  // ================== Esperar elemento en DOM ==================
+  // ================== Helper: Esperar elemento en DOM ==================
   const waitForElement = (selector, timeout = 3000) => {
     return new Promise((resolve, reject) => {
       const el = document.querySelector(selector);
@@ -30,9 +29,44 @@ export const transportesController = async () => {
         observer.disconnect();
         const found = document.querySelector(selector);
         if (found) resolve(found);
-        else reject(new Error(`Timeout waiting for ${selector}`));
+        else reject(new Error(`Timeout esperando ${selector}`));
       }, timeout);
     });
+  };
+
+  // ================== Validaciones ==================
+  const validarTexto = (e) => {
+    const char = String.fromCharCode(e.which);
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]$/.test(char)) {
+      e.preventDefault();
+    }
+  };
+
+  const validarNumero = (e) => {
+    const char = String.fromCharCode(e.which);
+    if (!/^[0-9]$/.test(char)) {
+      e.preventDefault();
+    }
+  };
+
+  const validarCampo = (input) => {
+    const valor = (input.value || "").trim();
+    if (!valor) {
+      input.classList.add("error");
+      return false;
+    } else {
+      input.classList.remove("error");
+      return true;
+    }
+  };
+
+  const validarCampos = () => {
+    let valido = true;
+    form.querySelectorAll("input, select, textarea").forEach((input) => {
+      if (input.type === "hidden") return;
+      if (!validarCampo(input)) valido = false;
+    });
+    return valido;
   };
 
   // ================== Cargar Estados ==================
@@ -54,7 +88,7 @@ export const transportesController = async () => {
     }
   };
 
-  // ================== Cargar Tipos Transporte ==================
+  // ================== Cargar Tipos de Transporte ==================
   const cargarTipos = async () => {
     try {
       const tipos = await solicitudes.get("tipotransporte");
@@ -91,15 +125,15 @@ export const transportesController = async () => {
           <td>${t.descripcion || "-"}</td>
           <td>${t.estadoNombre}</td>
           <td>${t.tipoTransporteNombre}</td>
-          <td>
-            <button class="btnEditar" data-id="${t.id}">✏️ Editar</button>
-            <button class="btnEliminar" data-id="${t.id}">🗑 Eliminar</button>
+          <td class="usuarios__acciones">
+            <button class="btnEditar usuarios__btn" data-id="${t.id}">Editar</button>
+            <button class="btnEliminar usuarios__btn" data-id="${t.id}">Eliminar</button>
           </td>
         `;
         tablaBody.appendChild(tr);
       });
 
-      // acciones
+      // Acción Editar
       tablaBody.querySelectorAll(".btnEditar").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.id;
@@ -112,28 +146,20 @@ export const transportesController = async () => {
             await cargarEstados();
             await cargarTipos();
 
-            const idHidden = document.getElementById("id");
-            const nombreInput = document.getElementById("nombre");
-            const matriculaInput = document.getElementById("matricula");
-            const asientosInput = document.getElementById("asientos");
-            const descripcionInput = document.getElementById("descripcion");
-            const selectEstado = document.getElementById("estado");
-            const selectTipo = document.getElementById("tipoTransporte");
+            // Campos del form
+            document.getElementById("id").value = t.id;
+            document.getElementById("nombre").value = t.nombre;
+            document.getElementById("matricula").value = t.matricula ?? "";
+            document.getElementById("asientos").value = t.asientos_totales;
+            document.getElementById("descripcion").value = t.descripcion ?? "";
+            document.getElementById("estado").value = t.id_estado;
+            document.getElementById("tipoTransporte").value = t.id_tipo_transporte;
+
+            editando = true;
+            transporteIdEditar = t.id;
+
             const btnRegisterEl = document.getElementById("btnRegister");
-
-            if (idHidden && nombreInput && selectEstado && selectTipo) {
-              idHidden.value = t.id;
-              nombreInput.value = t.nombre;
-              matriculaInput.value = t.matricula ?? "";
-              asientosInput.value = t.asientos_totales;
-              descripcionInput.value = t.descripcion ?? "";
-              selectEstado.value = t.id_estado;
-              selectTipo.value = t.id_tipo_transporte;
-
-              editando = true;
-              transporteIdEditar = t.id;
-              if (btnRegisterEl) btnRegisterEl.textContent = "Actualizar";
-            }
+            if (btnRegisterEl) btnRegisterEl.textContent = "Actualizar";
           } catch (err) {
             console.error(err);
             error("No se pudo cargar el transporte.");
@@ -141,6 +167,7 @@ export const transportesController = async () => {
         });
       });
 
+      // Acción Eliminar
       tablaBody.querySelectorAll(".btnEliminar").forEach((btn) => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.id;
@@ -167,10 +194,33 @@ export const transportesController = async () => {
   if (form && form.dataset.inited !== "true") {
     form.dataset.inited = "true";
 
+    const nombreInput = document.getElementById("nombre");
+    const matriculaInput = document.getElementById("matricula");
+    const asientosInput = document.getElementById("asientos");
+    const descripcionInput = document.getElementById("descripcion");
+
+    if (nombreInput) {
+      nombreInput.addEventListener("keypress", validarTexto);
+      nombreInput.addEventListener("blur", () => validarCampo(nombreInput));
+    }
+
+    if (matriculaInput) {
+      matriculaInput.addEventListener("blur", () => validarCampo(matriculaInput));
+    }
+
+    if (asientosInput) {
+      asientosInput.addEventListener("keypress", validarNumero);
+      asientosInput.addEventListener("blur", () => validarCampo(asientosInput));
+    }
+
+    if (descripcionInput) {
+      descripcionInput.addEventListener("blur", () => validarCampo(descripcionInput));
+    }
+
+    // Reset form
     btnReset?.addEventListener("click", () => {
       form.reset();
-      const idHidden = document.getElementById("id");
-      if (idHidden) idHidden.value = "";
+      document.getElementById("id").value = "";
       editando = false;
       transporteIdEditar = null;
       const btnRegisterEl = document.getElementById("btnRegister");
@@ -178,9 +228,10 @@ export const transportesController = async () => {
       [...form.querySelectorAll(".error")].forEach(c => c.classList.remove("error"));
     });
 
+    // Submit form
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (!validate.validarCampos(e)) return;
+      if (!validarCampos()) return;
 
       const datos = {
         nombre: document.getElementById("nombre").value,
@@ -197,11 +248,11 @@ export const transportesController = async () => {
       try {
         if (btnRegisterEl) {
           btnRegisterEl.disabled = true;
-          btnRegisterEl.textContent = idHidden?.value ? "Actualizando..." : "Creando...";
+          btnRegisterEl.textContent = idHidden.value ? "Actualizando..." : "Creando...";
         }
 
         let resp;
-        if (idHidden?.value) {
+        if (idHidden.value) {
           resp = await solicitudes.put(`transporte/${idHidden.value}`, datos);
           await success(resp.message || "Transporte actualizado");
         } else {
@@ -210,7 +261,7 @@ export const transportesController = async () => {
         }
 
         form.reset();
-        if (idHidden) idHidden.value = "";
+        idHidden.value = "";
         editando = false;
         transporteIdEditar = null;
         if (btnRegisterEl) btnRegisterEl.textContent = "Guardar";

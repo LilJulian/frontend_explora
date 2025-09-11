@@ -1,0 +1,20 @@
+.ticket {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 2px solid var(--labelVerde);
+  border-radius: 12px;
+  background: var(--fondoBlanco);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.ticket__detalle {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+}
+
+.ticket__detalle li {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}

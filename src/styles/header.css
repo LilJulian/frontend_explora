@@ -11,6 +11,7 @@ div#mi-div{
   align-items: center;
   gap: 14vw;
   margin-bottom: 6vw;
+  justify-content: space-between;
 }
 
 .logo__imagen{
@@ -62,6 +63,9 @@ div#mi-div{
    list-style-type: none; /* Quita los puntos */
   padding: 0; /* Opcional: elimina el espacio a la izquierda */
   margin: 0;  /* Opcional: elimina márgenes */
+  display: flex;
+  gap: 7vw;
+  align-items: center;
 }
 
 .menu_autenticacion__link, .menu_superadmin__link {
@@ -86,4 +90,20 @@ div#mi-div{
 
 .menu_superadmin__link{
   font-size: 1.7vw;
+}
+
+@media (max-width: 414px) and (max-height: 896px) {
+  .header-main{
+    width: 100vw;
+    height: 20vw;
+  }
+  .form{
+    margin-bottom: 40vw;
+  }
+  .menu_autenticacion__link{
+    font-size: 5vw;
+  }
+  .logo__imagen{
+    width: 30vw;
+  }
 }

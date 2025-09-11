@@ -1,0 +1,19 @@
+.usuarios__tabla-container {
+  width: 100%;
+  overflow-x: auto; /* 👈 permite scroll horizontal */
+  -webkit-overflow-scrolling: touch; /* scroll suave en móviles */
+  margin-top: 1rem;
+}
+
+.usuarios__tabla {
+  width: 100%;
+  min-width: 900px; /* 👈 asegura que la tabla no se comprima demasiado */
+  border-collapse: collapse;
+}
+
+.usuarios__tabla th,
+.usuarios__tabla td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}

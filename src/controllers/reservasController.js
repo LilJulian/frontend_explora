@@ -112,27 +112,32 @@ export async function reservasController() {
       precioTotal: Number((precioPorPersona * cantidad).toFixed(2)),
       idEstado: 1 // pendiente
     };
+try {
+  const created = await solicitudes.post("reservas", payload);
+  const reservaId = (created && (created.id || created.insertId)) || null;
+  if (!reservaId) {
+    error("No se pudo crear la reserva.");
+    return;
+  }
 
-    try {
-      const created = await solicitudes.post("reservas", payload);
-      const reservaId = (created && (created.id || created.insertId)) || null;
-      if (!reservaId) {
-        error("No se pudo crear la reserva.");
-        return;
-      }
+  try {
+    await solicitudes.put(`viajes/${viaje.id}/reducirAsientos?cantidad=${cantidad}`, {});
+  } catch (err) {
+    console.warn("No se redujeron asientos automáticamente:", err);
+  }
 
-      try {
-        await solicitudes.put(`/viajes/${viaje.id}/reducirAsientos?cantidad=${cantidad}`, {});
-      } catch (err) {
-        console.warn("No se redujeron asientos automáticamente:", err);
-      }
+  success("Reserva creada correctamente");
 
-      success("Reserva creada correctamente");
-      sessionStorage.setItem("id_reserva", reservaId);
-      location.hash = "#/tickets";
-    } catch (err) {
-      console.error("Error creando reserva:", err);
-      error("No se pudo crear la reserva.");
-    }
+  // 👇 Guardar info para tickets
+  sessionStorage.setItem("id_reserva", reservaId);
+  sessionStorage.setItem("cantidad_personas", cantidad);
+
+  // 👇 Redirigir a la vista de tickets
+  location.hash = "#/ticketForm";
+} catch (err) {
+  console.error("Error creando reserva:", err);
+  error("No se pudo crear la reserva.");
+}
+
   });
 }
