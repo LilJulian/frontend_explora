@@ -46,7 +46,7 @@ export function loginController() {
               window.location.href = '#/superadmin';
               break;
             case 2: // Super administrador
-              window.location.href = '#/admin';
+              window.location.href = '#/viajes';
               break;
             case 3: // cliente
               window.location.href = '#/cliente';

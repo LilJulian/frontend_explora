@@ -17,3 +17,17 @@
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
+.viajes__busqueda {
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+#buscar-viaje {
+  padding: 0.5rem 1rem;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+

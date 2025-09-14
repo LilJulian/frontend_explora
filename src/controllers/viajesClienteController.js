@@ -3,9 +3,10 @@ import { success, error } from "../helpers/alertas.js";
 
 export async function viajesClienteController() {
   const container = document.querySelector("#viajes-container");
+  const inputBuscar = document.querySelector("#buscar-viaje");
 
   try {
-    // 🔹 Consumir API de viajes
+    // 1️⃣ Consumir API de viajes
     let viajes = await solicitudes.get("viajes");
 
     if (!viajes || viajes.length === 0) {
@@ -13,7 +14,7 @@ export async function viajesClienteController() {
       return;
     }
 
-    // 🔹 Filtrar viajes: asientos >= 1 y fechaSalida >= hoy
+    // 2️⃣ Filtrar viajes válidos
     const hoy = new Date();
     hoy.setHours(0, 0, 0, 0);
 
@@ -28,18 +29,40 @@ export async function viajesClienteController() {
       return;
     }
 
-    // 🔹 Renderizar cards
-    container.innerHTML = viajes.map(viaje => `
-      <div class="viaje-card">
-        <h3>${viaje.ciudadOrigen} ➝ ${viaje.ciudadDestino}</h3>
-        <p><strong>Transporte:</strong> ${viaje.nombre_transporte}</p>
-        <p><strong>Fecha de salida:</strong> ${formatearFecha(viaje.fechaSalida)}</p>
-        <p><strong>Fecha de vuelta:</strong> ${formatearFecha(viaje.fechaVuelta)}</p>
-        <p><strong>Asientos disponibles:</strong> ${viaje.asientosDisponibles}</p>
-        <p class="precio">Precio: $${viaje.precioUnitario.toLocaleString()}</p>
-        <button class="usuarios__btn" onclick="seleccionarViaje(${viaje.id})">Seleccionar</button>
-      </div>
-    `).join("");
+    // 3️⃣ Función para renderizar viajes
+    const renderViajes = (lista) => {
+      if (lista.length === 0) {
+        container.innerHTML = `<p>No hay viajes que coincidan con tu búsqueda.</p>`;
+        return;
+      }
+      container.innerHTML = lista.map(viaje => `
+        <div class="viaje-card">
+          <h3>${viaje.ciudadOrigen} ➝ ${viaje.ciudadDestino}</h3>
+          <p><strong>Transporte:</strong> ${viaje.nombre_transporte}</p>
+          <p><strong>Fecha de salida:</strong> ${formatearFecha(viaje.fechaSalida)}</p>
+          <p><strong>Fecha de vuelta:</strong> ${formatearFecha(viaje.fechaVuelta)}</p>
+          <p><strong>Asientos disponibles:</strong> ${viaje.asientosDisponibles}</p>
+          <p class="precio">Precio: $${viaje.precioUnitario.toLocaleString()}</p>
+          <button class="usuarios__btn" onclick="seleccionarViaje(${viaje.id})">Seleccionar</button>
+        </div>
+      `).join("");
+    };
+
+    // Render inicial
+    renderViajes(viajes);
+
+    // 4️⃣ Filtrado en tiempo real
+    if (inputBuscar) {
+      inputBuscar.addEventListener("input", (e) => {
+        const termino = e.target.value.toLowerCase().trim();
+        const filtrados = viajes.filter(v =>
+          v.ciudadOrigen.toLowerCase().includes(termino) ||
+          v.ciudadDestino.toLowerCase().includes(termino) ||
+          v.nombre_transporte.toLowerCase().includes(termino)
+        );
+        renderViajes(filtrados);
+      });
+    }
 
   } catch (err) {
     console.error("Error al cargar viajes", err);
@@ -60,9 +83,6 @@ function formatearFecha(fechaStr) {
 
 // 🔹 Función global para seleccionar un viaje
 window.seleccionarViaje = function(id) {
-  // Guardar el id en sessionStorage en vez de pasar query
   sessionStorage.setItem("id_viaje", id);
-
-  // Navegar a la vista de reserva SIN query params
   location.hash = "#/reserva";
 };

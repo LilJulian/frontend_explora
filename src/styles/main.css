@@ -26,6 +26,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center; 
+  
 }
  /* @media (max-width: 896px) {
   .logo__imagen{

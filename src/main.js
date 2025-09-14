@@ -1,20 +1,16 @@
-import { renderHeader } from "./components/autenticacion/header.js";
+import { renderHeader, updateHeader } from "./components/autenticacion/header.js";
 import { router } from "./router/router.js";
 import './styles/index.js';
 
 const header = document.querySelector("#header");
 const app = document.querySelector("#app");
 
-// Renderiza el header
-
-// Ejecuta el router en la carga inicial
-window.addEventListener("DOMContentLoaded", () => {
-  renderHeader(header);
+window.addEventListener("DOMContentLoaded", async () => {
+  await renderHeader(header); // Solo una vez
   router(app);
 });
 
-// Ejecuta el router cada vez que cambia el hash
-window.addEventListener("hashchange", () => {
-  renderHeader(header);
+window.addEventListener("hashchange", async () => {
+  await updateHeader(header); // Actualiza dinámicamente sin parpadear
   router(app);
 });

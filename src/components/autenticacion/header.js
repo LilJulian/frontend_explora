@@ -3,8 +3,12 @@ import { isAuth, logout, getUserInfo } from "../../helpers/auth.js";
 import Swal from "sweetalert2";
 
 export const renderHeader = async (elemento) => {
+  // Renderiza solo una vez la estructura base
   elemento.innerHTML = headerHtml;
+  await updateHeader(elemento);
+};
 
+export const updateHeader = async (elemento) => {
   const autenticado = await isAuth();
   const usuario = autenticado ? await getUserInfo() : null;
 
@@ -17,18 +21,15 @@ export const renderHeader = async (elemento) => {
   menu.innerHTML = '';
 
   if (!autenticado) {
-    // ✅ Mostrar búsqueda solo si NO hay login
     if (busqueda) {
       busqueda.classList.remove('oculto');
       if (headerMain) headerMain.style.justifyContent = 'flex-start';
     }
 
-    // Eventos búsqueda
     if (formBuscar) {
       formBuscar.addEventListener("submit", (e) => {
         e.preventDefault();
         const valor = (formBuscar.querySelector("[name='ticket']").value || "").trim();
-
         if (!valor) {
           alert("Ingresa un ID de ticket");
           return;
@@ -37,12 +38,10 @@ export const renderHeader = async (elemento) => {
           alert("El ID debe ser numérico");
           return;
         }
-
         location.hash = `#/ticket/${encodeURIComponent(valor)}`;
       });
     }
 
-    // Menú autenticación
     menu.innerHTML = `
       <ul class="menu_autenticacion__opciones">
         <li class="menu_autenticacion__opcion" id="login">
@@ -56,46 +55,38 @@ export const renderHeader = async (elemento) => {
       </ul>
     `;
   } else {
-    // ✅ Ocultar búsqueda cuando ya está logueado
     if (busqueda) {
       busqueda.classList.add('oculto');
     }
 
     let opciones = "";
+    const rol = localStorage.getItem("id_rol");
 
-    if (localStorage.getItem("id_rol") === "1" && location.hash === "#/viajes") {
+    if ((rol === "1" || rol === "2") && location.hash === "#/viajes") {
       opciones = `
         <ul class="menu_autenticacion__opciones">
-          <li class="menu_autenticacion__opcion"><a href="#/ciudades" class="menu_autenticacion__link">Ciudades</a></li>
-          <li class="menu_autenticacion__opcion"><a href="#/transportes" class="menu_autenticacion__link">Transportes</a></li>
-          <li class="menu_autenticacion__opcion"><a href="#/viajes" class="menu_autenticacion__link">Viajes</a></li>
-        </ul>
-      `;
+          <li><a href="#/ciudades" class="menu_autenticacion__link">Ciudades</a></li>
+          <li><a href="#/transportes" class="menu_autenticacion__link">Transportes</a></li>
+          <li><a href="#/viajes" class="menu_autenticacion__link">Viajes</a></li>
+        </ul>`;
     }
 
-    if (
-      localStorage.getItem("id_rol") === "1" &&
-      (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")
-    ) {
+    if ((rol === "1" || rol === "2") &&
+      (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")) {
       opciones = `
         <ul class="menu_superadmin__opciones menu_autenticacion__opciones">
-          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/ciudades">Crea ciudades</a></li>
-          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/tablaCiudades">Ver ciudades</a></li>
-          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/rutaCiudad">Rutas</a></li>
-        </ul>
-      `;
+          <li><a class="menu_autenticacion__link" href="#/ciudades">Crea ciudades</a></li>
+          <li><a class="menu_autenticacion__link" href="#/tablaCiudades">Ver ciudades</a></li>
+          <li><a class="menu_autenticacion__link" href="#/rutaCiudad">Rutas</a></li>
+        </ul>`;
     }
 
-    if (
-      localStorage.getItem("id_rol") === "3" &&
-      (location.hash === "#/cliente" || location.hash === "#/reservasCliente")
-    ) {
+    if (rol === "3" && (location.hash === "#/cliente" || location.hash === "#/reservasCliente")) {
       opciones = `
         <ul class="menu_superadmin__opciones menu_autenticacion__opciones">
-          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/cliente">Ver viajes</a></li>
-          <li class="menu_autenticacion__opcion"><a class="menu_autenticacion__link" href="#/reservasCliente">Ver reservas</a></li>
-        </ul>
-      `;
+          <li><a class="menu_autenticacion__link" href="#/cliente">Ver viajes</a></li>
+          <li><a class="menu_autenticacion__link" href="#/reservasCliente">Ver reservas</a></li>
+        </ul>`;
     }
 
     const logoutBtn = `
@@ -103,8 +94,7 @@ export const renderHeader = async (elemento) => {
         <li class="menu_autenticacion__opcion" id="logout">
           <a class="menu_autenticacion__link" href="#">Cerrar sesión</a>
         </li>
-      </ul>
-    `;
+      </ul>`;
 
     menu.innerHTML = opciones + logoutBtn;
 
@@ -113,7 +103,6 @@ export const renderHeader = async (elemento) => {
       btnLogout.addEventListener('click', async (e) => {
         e.preventDefault();
 
-        // Confirmación con SweetAlert2
         const result = await Swal.fire({
           title: '¿Seguro que deseas cerrar sesión?',
           icon: 'warning',
@@ -124,20 +113,17 @@ export const renderHeader = async (elemento) => {
         });
 
         if (result.isConfirmed) {
-          logout(); // Función que elimina tokens, localStorage, etc.
-
+          logout();
           await Swal.fire({
             icon: 'success',
             title: 'Sesión cerrada correctamente',
             showConfirmButton: false,
             timer: 1500
           });
-
           location.hash = "#/login";
-          renderHeader(elemento);
+          updateHeader(elemento); // 🔁 Solo actualiza el contenido
         }
       });
     }
-
   }
 };

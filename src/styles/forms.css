@@ -5,27 +5,35 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+
   width: 30vw;
 }
 
 .form {
-  background-color: var(--colorFondo); 
+  background-color: var(--colorFondo);
   padding: 30px 25px;
   border-radius: 15px;
   width: 30vw;
   box-shadow: 4px 6px 12px rgba(0, 0, 0, 0.25);
   text-align: center;
   position: relative;
+  margin-bottom: 300px;
+
+  /* ❌ eliminamos altura fija */
+  min-height: 400px; /* opcional: asegura que tenga altura mínima sin fijarla */
 }
-.form--registro{
-  height: 400px;
+
+.form--registro {
+  /* ❌ quitamos height: 400px para que crezca dinámicamente */
 }
+
+
 
 .form_input {
   display: block;
   width: 100%;
   padding: 12px;
-  margin: 12px 0;
+  margin: 12px 0 4px 0; /* espacio más pequeño para dejar lugar al error */
   border: none;
   border-radius: 10px;
   background: var(--verdeClaro);
@@ -33,6 +41,18 @@
   font-weight: bold;
   text-align: center;
   color: var(--placeholderOscuro);
+}
+.form_input--login{
+ margin-bottom: 30px;
+}
+
+/* ✅ estilos para los mensajes de error */
+.mensaje-error {
+  display: block;
+  color: red;
+  font-size: 12px;
+  text-align: left;
+  margin: 0 0 8px 5px;
 }
 
 .form_boton {
@@ -46,22 +66,34 @@
   cursor: pointer;
   margin-top: 10px;
 }
+/* ✅ Estilos específicos para login */
+.form--login {
+  max-width: 400px; /* que no se vea demasiado ancho */
+  padding: 70px 30px; /* un poco más compacto */
+}
+
+.form--login .form_titulo {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+/* 📱 Responsive */
+@media (max-width: 768px) {
+  .content,
+  .form {
+    /* width: 90vw; */
+    margin-bottom: 70vw;
+  }
+}
 
 @media (max-width: 414px) and (max-height: 896px) {
-  .form{
-    width: 80vw;
-    height: 80vw;
-    padding: 11vw;
+  .form {
+    width: 85vw;
+    padding: 8vw;
+    min-height: auto; /* deja que el contenido defina la altura */
   }
 
-  .form--registro{
-    height: 450px;
+  .form_input {
+    margin-bottom: 5vw;
   }
-
-
-  .form_input{
-    margin-bottom: 6vw;
-    
-  }
-
 }

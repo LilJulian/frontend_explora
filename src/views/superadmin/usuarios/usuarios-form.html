@@ -1,4 +1,5 @@
 <a href="#/superadmin" class="usuarios__btn usuarios__btn--link">⬅ Volver</a>
+
 <section class="usuarios usuarios--border usuarios--tamano" id="usuarios-form-section">
   <h2 class="usuarios__titulo">Gestión de Usuarios</h2>
 
@@ -22,14 +23,20 @@
 
     <div class="usuarios__grupo">
       <label for="contrasena" class="usuarios__label">Contraseña:</label>
-      <input type="password" id="contrasena" class="usuarios__input" required/>
+      <input type="password" id="contrasena" class="usuarios__input" required />
+    </div>
+
+    <div class="usuarios__grupo">
+      <label for="rol" class="usuarios__label">Rol:</label>
+      <select id="rol" class="usuarios__input" required>
+        <option value="">Seleccione un rol</option>
+      </select>
     </div>
 
     <div class="usuarios__acciones">
       <button type="submit" class="usuarios__btn btn__confirmar" id="btnRegister">Guardar</button>
       <button type="button" class="usuarios__btn btn__limpiar" id="btnReset">Limpiar</button>
       <a href="#/tablaUsuarios" class="usuarios__btn usuarios__btn--link">Ver Usuarios</a>
-
     </div>
   </form>
 </section>
