@@ -31,3 +31,11 @@
   border-radius: 8px;
 }
 
+@media (max-width: 414px) {
+  #buscar-viaje{
+    margin: 0 12px;
+  }
+  .viaje-card{
+    margin: 12px;
+  }
+}
