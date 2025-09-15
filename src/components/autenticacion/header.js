@@ -71,15 +71,18 @@ export const updateHeader = async (elemento) => {
         </ul>`;
     }
 
-    if ((rol === "1" || rol === "2") &&
-      (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")) {
-      opciones = `
-        <ul class="menu_superadmin__opciones menu_autenticacion__opciones">
-          <li><a class="menu_autenticacion__link" href="#/ciudades">Crea ciudades</a></li>
-          <li><a class="menu_autenticacion__link" href="#/tablaCiudades">Ver ciudades</a></li>
-          <li><a class="menu_autenticacion__link" href="#/rutaCiudad">Rutas</a></li>
-        </ul>`;
-    }
+if (
+  (rol === "1" || rol === "2") &&
+  (location.hash === "#/ciudades" || location.hash === "#/tablaCiudades" || location.hash === "#/rutaCiudad")
+) {
+  opciones = `
+    <ul class="menu_superadmin__opciones menu_autenticacion__opciones">
+      <li><a class="menu_autenticacion__link" href="#/ciudades">Crea ciudades</a></li>
+      <li><a class="menu_autenticacion__link" href="#/tablaCiudades">Ver ciudades</a></li>
+      <li><a class="menu_autenticacion__link" href="#/rutaCiudad">Rutas</a></li>
+    </ul>`;
+}
+
 
     if (rol === "3" && (location.hash === "#/cliente" || location.hash === "#/reservasCliente")) {
       opciones = `

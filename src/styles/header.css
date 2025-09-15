@@ -1,6 +1,6 @@
 .header-main {
   background-color: var(--colorFondo);
-  padding: 0 5vw;
+  padding: 0 4vw;
   width: 100%;
   height: 10vw;
   display: flex;
@@ -89,45 +89,7 @@
   font-size: 1.7vw;
 }
 
-/* 📱 RESPONSIVE TABLET */
-@media (max-width: 768px) {
-  .header-main {
-    flex-direction: column;
-    height: auto;
-    gap: 3vw;
-    padding: 3vw;
-    align-items: flex-start;
-  }
 
-  .logo__imagen {
-    width: 35vw;
-    max-width: 140px;
-  }
-
-  .busqueda__input {
-    width: 60vw;
-    height: 8vw;
-    font-size: 3.5vw;
-    padding-left: 3vw;
-  }
-
-  .busqueda__logo {
-    height: 8vw;
-    width: 8vw;
-    font-size: 4vw;
-  }
-
-  .menu_autenticacion {
-    gap: 8vw;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .menu_autenticacion__link {
-    font-size: 4vw;
-  }
-}
 
 /* 📱 RESPONSIVE MÓVIL PEQUEÑO */
 @media (max-width: 414px) {
